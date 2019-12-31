@@ -57,9 +57,8 @@ html, body {
 
 
 .pic-section {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 20px;
-
 }
 
 
@@ -86,6 +85,18 @@ html, body {
     align-items: center;
     width: 100%;
 }
+.add-nav-link-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: url("./plusBtn.png");
+    background-size: cover;
+    margin-left: -30px;
+}
+.add-nav-link-btn:hover{
+    border: 3px solid white;
+    cursor: pointer;
+}
 .navigation-links {
     display: flex;
     flex-direction: row;
@@ -93,6 +104,7 @@ html, body {
     width: 100%;
     padding: 10px;
     margin-top: 18px;
+    flex-wrap: wrap;
 }
 .nav-link {
     padding: 10px 15px;
@@ -101,6 +113,10 @@ html, body {
     box-shadow: 0px 0px 3px rgba(112, 112, 112, 1);
     background-color: white;
     font-size: 0.7em;
+}
+.nav-link:hover {
+    transform: translate(0px, -1px);
+    cursor: pointer;
 }
 .chosen-nav-link {
     background-color: #B2ACAC;
@@ -118,6 +134,10 @@ html, body {
     padding: 7px 10px;
     font-size: 0.7em;
     background-color: white;
+}
+.admin-access-btn:hover {
+    cursor: pointer;
+    box-shadow: 0 0 5px white;
 }
 
 
@@ -142,7 +162,6 @@ html, body {
 p {
     margin-top: 10px;
 }
-
 
 
 
