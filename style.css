@@ -165,6 +165,11 @@ p {
 
 
 
+.edit-mode-signifier {
+    background-color: aquamarine;
+}
+
+
 @media only screen and (max-width: 800px) {
     .master-container {
         display: grid;
