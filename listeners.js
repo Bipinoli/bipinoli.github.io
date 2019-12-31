@@ -11,3 +11,10 @@ function editMode() {
     this.innerText = this.innerHTML;
     this.classList.add("edit-mode-signifier");
 }
+
+
+function navSelected() {
+    globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
+    this.classList.add("chosen-nav-link");
+    globalNamespace['selectedNavLink'] = this;
+}

@@ -1,0 +1,3 @@
+globalNamespace = {
+    selectedNavLink: null
+}
