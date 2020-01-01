@@ -1,6 +1,7 @@
 (function init() {
     setupListeners();
     selectFirstNavLink();
+    reorderComponents();
     document.getElementsByClassName("content-reveal-btn")[0].addEventListener("click", revealContents);
     console.log("ok initalized properly. Ready to go!");
 })();
@@ -17,6 +18,7 @@ function setupListeners() {
     setupProfileListeners();
     setupNavListeners();
     setupContentListeners();
+    setupWindowResizeListeners();
     
     document.getElementsByClassName("add-nav-link-btn")[0].addEventListener("click", generateNavigationLink);
 }
@@ -41,4 +43,8 @@ function setupContentListeners() {
     for (let i=0; i<contentEditables.length; i++) {
         contentEditables[i].addEventListener("dblclick", editMode);
     }
+}
+
+function setupWindowResizeListeners() {
+    window.addEventListener("resize", reorderComponents);
 }

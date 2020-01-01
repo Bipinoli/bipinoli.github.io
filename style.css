@@ -230,4 +230,7 @@ p {
     .details-master-container {
         overflow-y: visible;
     }
+    .pic-section {
+        display: none;
+    }
 }

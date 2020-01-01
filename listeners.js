@@ -63,3 +63,21 @@ function beautifyHtml(html) {
         'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
       });
 }
+
+
+function reorderComponents() {
+    console.log("lets reorder profile");
+    nav = document.getElementsByClassName("navigate-section")[0];
+    profile = document.getElementsByClassName("profile-container")[0];
+    if (window.innerWidth > 800) {
+        // navigation section should be at last
+        if (nav === profile.lastElementChild) return;
+        profile.removeChild(nav);
+        profile.appendChild(nav);
+        return;
+    }
+    // navigation section should be at top
+    if (nav === profile.firstElementChild) return;
+    profile.removeChild(nav);
+    profile.insertBefore(nav, profile.firstElementChild);
+}
