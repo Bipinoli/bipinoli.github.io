@@ -48,3 +48,19 @@ function setupContentListeners() {
 function setupWindowResizeListeners() {
     window.addEventListener("resize", reorderComponents);
 }
+
+function isDoubleTap() {
+    // console.log("which tap?");
+
+    // var now = new Date().getTime();
+    // var timesince = now - globalNamespace['latestTap'];
+    // if((timesince < 600) && (timesince > 0)){
+
+    // // double tap   
+
+    // }else{
+    //         // too much time to be a doubletap
+    //         }
+
+    // mylatesttap = new Date().getTime();
+}

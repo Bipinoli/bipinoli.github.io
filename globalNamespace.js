@@ -1,3 +1,3 @@
 globalNamespace = {
-    selectedNavLink: null
+    selectedNavLink: null,
 }
