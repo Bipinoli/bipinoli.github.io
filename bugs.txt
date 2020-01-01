@@ -1,2 +1,6 @@
 1. make profile-section and details-section separately scrollable.
 2. innerText doesn't allow black spaces so htmlBeautifier is unable to show its magic.
+
+
+fixes:
+1. Bug #1 has been sorted for chrome, but not quite for firefox
