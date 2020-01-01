@@ -1,12 +1,7 @@
 (function init() {
-    document.getElementsByClassName("add-nav-link-btn")[0].addEventListener("click", generateNavigationLink);
-    editables = document.getElementsByClassName("editable");
-    for (let i=0; i<editables.length; i++) {
-        editables[i].addEventListener("dblclick", editMode);
-        editables[i].addEventListener("click", navSelected);
-    }
-    
+    setupListeners();
     selectFirstNavLink();
+    document.getElementsByClassName("content-reveal-btn")[0].addEventListener("click", revealContents);
     console.log("ok initalized properly. Ready to go!");
 })();
 
@@ -15,4 +10,35 @@ function selectFirstNavLink() {
     nav = document.getElementsByClassName("navigation-links")[0].children[0];
     nav.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = nav;
+}
+
+
+function setupListeners() {
+    setupProfileListeners();
+    setupNavListeners();
+    setupContentListeners();
+    
+    document.getElementsByClassName("add-nav-link-btn")[0].addEventListener("click", generateNavigationLink);
+}
+
+
+function setupNavListeners() {
+    navs = document.getElementsByClassName("nav-link")
+    for (let i=0; i<navs.length; i++) {
+        navs[i].addEventListener("click", navSelected);
+    }
+}
+
+function setupProfileListeners() {
+    profileEditables = document.getElementsByClassName("profile-editable");
+    for (let i=0; i<profileEditables.length; i++) {
+        profileEditables[i].addEventListener("dblclick", editMode);
+    }
+}
+
+function setupContentListeners() {
+    contentEditables = document.getElementsByClassName("content-editable");
+    for (let i=0; i<contentEditables.length; i++) {
+        contentEditables[i].addEventListener("dblclick", editMode);
+    }
 }

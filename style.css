@@ -85,7 +85,7 @@ html, body {
     align-items: center;
     width: 100%;
 }
-.add-nav-link-btn {
+.add-nav-link-btn{
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -151,12 +151,30 @@ html, body {
 
 
 
-
+.details-master-container {
+    display: flex;
+    flex-direction: column;
+}
 .details-container {
     padding: 10px 10px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 .content {
     margin-bottom: 35px;
+}
+.content-reveal-btn {
+    padding: 10px 20px;
+    width: fit-content;
+    align-self: center;
+    box-shadow: 0px 0px 4px black;
+    border-radius: 50px;
+    background-size: cover;
+}
+.content-reveal-btn:hover {
+    box-shadow: 0px 0px 7px black;
+    cursor: pointer;
 }
 
 p {
@@ -167,6 +185,8 @@ p {
 
 .edit-mode-signifier {
     background-color: aquamarine;
+    font-family: 'Courier New', Courier, monospace;
+    color: black;
 }
 
 
