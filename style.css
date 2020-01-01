@@ -10,6 +10,12 @@ html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body {
+    border: 2px solid red;
+    width: 100%;
+    height: 100%;
+}
+
 .master-container {
     display: grid;
     grid-template-columns: 400px auto;
@@ -26,6 +32,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    overflow-y: auto;
 }
 
 .details-container {
@@ -154,6 +161,7 @@ html, body {
 .details-master-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .details-container {
     padding: 10px 10px 20px 30px;

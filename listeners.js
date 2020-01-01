@@ -22,19 +22,44 @@ function navSelected() {
 
 function revealContents() {
     // reveal the underlying html
-    detailsContainer = document.getElementsByClassName("details-container")[0]
-
+    detailsContainer = document.getElementsByClassName("details-container")[0];
     if (detailsContainer['editMode']) {
         detailsContainer['editMode'] = false;
         detailsContainer.contentEditable = "false";
-        detailsContainer.innerHTML = detailsContainer.innerText;
+        html = removeHtmlTags(detailsContainer.innerHTML);
+        html = formHtmlTagsFromEncode(html);
+        detailsContainer.innerHTML = beautifyHtml(html);
         detailsContainer.classList.remove("edit-mode-signifier");
-        setupListeners();
+        setupContentListeners();
         return;
     }
     
     detailsContainer['editMode'] = true;
     detailsContainer.contentEditable = "true";
+    console.log(beautifyHtml(detailsContainer.innerHTML));
     detailsContainer.innerText = detailsContainer.innerHTML;
     detailsContainer.classList.add("edit-mode-signifier");
+}
+
+
+function removeHtmlTags(text) {
+    text = text.replace(/<br>\s*/g, "");
+    text = text.replace(/<\w*>|<\/\w*>/g, "");
+    return text;
+}
+
+function formHtmlTagsFromEncode(text) {
+    text = text.replace(/&lt;/g, "<");
+    text = text.replace(/&gt;/g, ">");
+    return text;
+}
+
+function beautifyHtml(html) {
+    return style_html(html, {
+        'indent_size': 3,
+        'indent_char': ' ',
+        'max_char': 78,
+        'brace_style': 'expand',
+        'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
+      });
 }
