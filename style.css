@@ -1,5 +1,4 @@
 * {
-    padding: 0;
     margin: 0;
     border: 0;
     box-sizing: border-box;
@@ -60,6 +59,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 10px;
 }
 .name {
     font-weight: bolder;
@@ -70,10 +70,12 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    border: 1px solid red;
 }
 .quick-link {
     border-left: 2px solid #565656;
     padding: 0 8px;
+    border: 1px solid red;
 }
 .quick-link:first-child {
     border-left: none;
@@ -214,6 +216,7 @@ p {
     font-family: 'Courier New', Courier, monospace;
     color: black;
     margin: 10px;
+    padding: 10px;
 }
 
 

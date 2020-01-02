@@ -13,24 +13,16 @@ function navSelected() {
 
 
 function revealContents() {
+    console.log("reveal contents");
     // reveal the underlying html
     detailsContainer = document.getElementsByClassName("details-container")[0];
-    if (detailsContainer['editMode']) {
-        detailsContainer['editMode'] = false;
-        detailsContainer.contentEditable = "false";
-        html = removeHtmlTags(detailsContainer.innerHTML);
-        html = formHtmlTagsFromEncode(html);
-        detailsContainer.innerHTML = beautifyHtml(html);
-        detailsContainer.classList.remove("edit-mode-signifier");
-        setupContentListeners();
+    if (detailsContainer.style.display == "none") {
+        let textArea = detailsContainer.parentElement.firstElementChild;
+        replaceWithOriginalElement.bind(textArea)();
         return;
     }
-    
-    detailsContainer['editMode'] = true;
-    detailsContainer.contentEditable = "true";
-    console.log(beautifyHtml(detailsContainer.innerHTML));
-    detailsContainer.innerText = detailsContainer.innerHTML;
-    detailsContainer.classList.add("edit-mode-signifier");
+    detailsContainer.style.display = "none";
+    replaceWithTextArea(detailsContainer);
 }
 
 
