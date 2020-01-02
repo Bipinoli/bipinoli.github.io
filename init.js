@@ -36,6 +36,7 @@ function setupProfileListeners() {
     profileEditables = document.getElementsByClassName("profile-editable");
     for (let i=0; i<profileEditables.length; i++) {
         profileEditables[i].addEventListener("dblclick", editMode);
+        profileEditables[i].addEventListener("touchstart", tapHandler);
     }
 }
 
@@ -43,7 +44,7 @@ function setupContentListeners() {
     contentEditables = document.getElementsByClassName("content-editable");
     for (let i=0; i<contentEditables.length; i++) {
         contentEditables[i].addEventListener("dblclick", editMode);
-        contentEditables[i].addEventListener("touchstart", isDoubleTap);
+        contentEditables[i].addEventListener("touchstart", tapHandler);
     }
 }
 
@@ -58,19 +59,4 @@ function initTapSettings() {
         profileEditables[i]["latestTappedTime"] = null;
     for (let i=0; i<contentEditables.length; i++)
         contentEditables[i]["latestTappedTime"] = null;
-}
-
-function isDoubleTap() {
-    let now = new Date().getTime();
-    if (now - this["latestTappedTime"] < 400) {
-        console.log("double tap");
-    }
-    else {
-        setTimeout(() => {
-            now = new Date().getTime();
-            if (now - this["latestTappedTime"] >= 200)
-                console.log("single tap");
-        }, 200);
-    }
-    this["latestTappedTime"] = new Date().getTime();
 }

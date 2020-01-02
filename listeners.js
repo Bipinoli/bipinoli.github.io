@@ -14,6 +14,7 @@ function editMode() {
 
 
 function navSelected() {
+    console.log("navSelected");
     globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
@@ -76,4 +77,21 @@ function reorderComponents() {
     if (nav === profile.firstElementChild) return;
     profile.removeChild(nav);
     profile.insertBefore(nav, profile.firstElementChild);
+}
+
+
+function tapHandler() {
+    let now = new Date().getTime();
+    if (now - this["latestTappedTime"] < 400) {
+        console.log("double tap");
+        editMode.bind(this)();
+    }
+    else {
+        setTimeout(() => {
+            now = new Date().getTime();
+            if (now - this["latestTappedTime"] >= 200)
+                console.log("single tap");
+        }, 200);
+    }
+    this["latestTappedTime"] = new Date().getTime();
 }
