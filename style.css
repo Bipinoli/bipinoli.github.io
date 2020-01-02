@@ -209,9 +209,11 @@ p {
 
 
 .edit-mode-signifier {
+    width: 100%;
     background-color: aquamarine;
     font-family: 'Courier New', Courier, monospace;
     color: black;
+    margin: 10px;
 }
 
 

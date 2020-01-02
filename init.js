@@ -3,6 +3,7 @@
     selectFirstNavLink();
     reorderComponents();
     initTapSettings();
+    document.getElementsByTagName("textarea")[0].addEventListener("input", adaptTextArea);
     document.getElementsByClassName("content-reveal-btn")[0].addEventListener("click", revealContents);
     console.log("ok initalized properly. Ready to go!");
 })();

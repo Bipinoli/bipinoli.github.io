@@ -1,15 +1,6 @@
 function editMode() {
-    if (this['editMode']) {
-        this['editMode'] = false;
-        this.contentEditable = "false";
-        this.innerHTML = this.innerText;
-        this.classList.remove("edit-mode-signifier");
-        return;
-    }
-    this['editMode'] = true;
-    this.contentEditable = "true";
-    this.innerText = this.innerHTML;
-    this.classList.add("edit-mode-signifier");
+    this.style.display = "none";
+    replaceWithTextArea(this);
 }
 
 
@@ -22,25 +13,6 @@ function navSelected() {
 
 
 function revealContents() {
-    function removeHtmlTags(text) {
-        text = text.replace(/<br>\s*/g, "");
-        text = text.replace(/<\w*>|<\/\w*>/g, "");
-        return text;
-    }
-    function formHtmlTagsFromEncode(text) {
-        text = text.replace(/&lt;/g, "<");
-        text = text.replace(/&gt;/g, ">");
-        return text;
-    }
-    function beautifyHtml(html) {
-        return style_html(html, {
-            'indent_size': 3,
-            'indent_char': ' ',
-            'max_char': 78,
-            'brace_style': 'expand',
-            'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
-          });
-    }
     // reveal the underlying html
     detailsContainer = document.getElementsByClassName("details-container")[0];
     if (detailsContainer['editMode']) {
@@ -89,9 +61,14 @@ function tapHandler() {
     else {
         setTimeout(() => {
             now = new Date().getTime();
-            if (now - this["latestTappedTime"] >= 200)
+            if (now - this["latestTappedTime"] >= 400)
                 console.log("single tap");
-        }, 200);
+        }, 400);
     }
     this["latestTappedTime"] = new Date().getTime();
+}
+
+
+function adaptTextArea() {
+    this.style.height = "" + this.scrollHeight + "px";
 }

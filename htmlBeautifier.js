@@ -520,3 +520,14 @@ function style_html(html_source, options) {
     }
     return multi_parser.output.join('');
 }
+
+
+function beautifyHtml(html) {
+    return style_html(html, {
+        'indent_size': 3,
+        'indent_char': ' ',
+        'max_char': 78,
+        'brace_style': 'expand',
+        'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
+      });
+}
