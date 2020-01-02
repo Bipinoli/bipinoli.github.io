@@ -2,6 +2,7 @@
     setupListeners();
     selectFirstNavLink();
     reorderComponents();
+    initTapSettings();
     document.getElementsByClassName("content-reveal-btn")[0].addEventListener("click", revealContents);
     console.log("ok initalized properly. Ready to go!");
 })();
@@ -42,6 +43,7 @@ function setupContentListeners() {
     contentEditables = document.getElementsByClassName("content-editable");
     for (let i=0; i<contentEditables.length; i++) {
         contentEditables[i].addEventListener("dblclick", editMode);
+        contentEditables[i].addEventListener("touchstart", isDoubleTap);
     }
 }
 
@@ -49,18 +51,26 @@ function setupWindowResizeListeners() {
     window.addEventListener("resize", reorderComponents);
 }
 
+function initTapSettings() {
+    profileEditables = document.getElementsByClassName("profile-editable");
+    contentEditables = document.getElementsByClassName("content-editable");
+    for (let i=0; i<profileEditables.length; i++)
+        profileEditables[i]["latestTappedTime"] = null;
+    for (let i=0; i<contentEditables.length; i++)
+        contentEditables[i]["latestTappedTime"] = null;
+}
+
 function isDoubleTap() {
-    // console.log("which tap?");
-
-    // var now = new Date().getTime();
-    // var timesince = now - globalNamespace['latestTap'];
-    // if((timesince < 600) && (timesince > 0)){
-
-    // // double tap   
-
-    // }else{
-    //         // too much time to be a doubletap
-    //         }
-
-    // mylatesttap = new Date().getTime();
+    let now = new Date().getTime();
+    if (now - this["latestTappedTime"] < 400) {
+        console.log("double tap");
+    }
+    else {
+        setTimeout(() => {
+            now = new Date().getTime();
+            if (now - this["latestTappedTime"] >= 200)
+                console.log("single tap");
+        }, 200);
+    }
+    this["latestTappedTime"] = new Date().getTime();
 }
