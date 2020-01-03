@@ -37,7 +37,7 @@ function fetch(collection) {
             console.log("fetched successfully!");
             let retval = [];
             querySnapshot.forEach((doc) => {
-                retval.push({id: doc.id, data: doc.data()});
+                retval.push({id: doc.id, html: doc.data().html});
             });
             console.log(retval);
             resolve(retval);
@@ -53,7 +53,9 @@ function fetchDoc(collection, doc) {
         globalNamespace["db"].collection(collection).doc(doc).get()
             .then(doc => {
                 console.log("doc fetched successfully!");
-                resolve({html: doc.data()});
+                let retval = {data: doc.data().navs};
+                console.log(retval);
+                resolve(retval);
             })
             .catch(err => {
                 console.error(err);
@@ -121,6 +123,5 @@ function deleteCollection(collection) {
                 console.error(error);
                 reject();
             });
-        
     });
 }

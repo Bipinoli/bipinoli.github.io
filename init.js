@@ -1,4 +1,6 @@
 (function init() {
+    initDB();
+    await constructPage();
     setupListeners();
     selectFirstNavLink();
     reorderComponents();

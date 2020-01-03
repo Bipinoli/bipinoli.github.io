@@ -67,6 +67,63 @@ function enableDOMElement(element) {
 }
 
 
-function generatePage(navHeader) {
-    
+async function constructPage() {
+    return new Promise(function (resolve, reject) {
+        fetchDoc("profile", "navlinks")
+            .then(data => {
+                let promises = [constructProfile(), constructContents(data.data[0])];
+                Promise.all(promises)
+                    .then(() => resolve())
+                    .catch((error) => {
+                        console.error(error);
+                        reject();
+                    });
+            })
+            .catch(err => {
+                console.error(err);
+                reject();
+            });
+    });
+}
+
+async function constructProfile() {
+    function selectHtml(data, id) {
+        for (let i=0; i<data.length; i++) {
+            if (data[i].id == id) 
+                return data[i].html;
+        }
+    }
+    return new Promise(function (resolve, reject) {
+        fetch("profile")
+        .then(data => {
+            document.getElementsByClassName("name-section")[0].innerHTML = selectHtml(data, "namesection");
+            document.getElementsByClassName("pic-section")[0].innerHTML = selectHtml(data, "picsection");
+            document.getElementsByClassName("navigate-section")[0].innerHTML = selectHtml(data, "navigationsection");
+            document.getElementsByClassName("about-section")[0].innerHTML = selectHtml(data, "aboutsection");
+            resolve();
+        })
+        .catch(error => {
+            console.error(error);
+            reject();
+        });
+    });
+}
+
+async function constructContents(navHeader) {
+    return new Promise(function (resolve, reject) {
+        fetch(navHeader)
+        .then(data => {
+            console.log(data);
+            let html = "";
+            for (let i=0; i<data.length; i++) {
+                html += data[i].html;
+            }
+            document.getElementsByClassName("details-container")[0].innerHTML = html;
+            resolve();
+        })
+        .catch(err => {
+            console.error(err);
+            reject();
+        });
+    });
 }
