@@ -113,7 +113,7 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: url("./plusBtn.png");
+    background: url("../assets/plusBtn.png");
     background-size: cover;
     margin-left: -30px;
 }
