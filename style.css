@@ -70,12 +70,10 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    border: 1px solid red;
 }
 .quick-link {
     border-left: 2px solid #565656;
     padding: 0 8px;
-    border: 1px solid red;
 }
 .quick-link:first-child {
     border-left: none;

@@ -1,5 +1,4 @@
 function editMode() {
-    this.style.display = "none";
     replaceWithTextArea(this);
 }
 
@@ -21,7 +20,6 @@ function revealContents() {
         replaceWithOriginalElement.bind(textArea)();
         return;
     }
-    detailsContainer.style.display = "none";
     replaceWithTextArea(detailsContainer);
 }
 
