@@ -1,14 +1,7 @@
-function preserveContents() {
+function preserveContents(page = globalNamespace.selectedNavLink.innerText) {
     let contents = document.getElementsByClassName("content");
-    let page = globalNamespace.selectedNavLink.innerText;
-
-    contents = document.getElementsByClassName("content");
-    let data = [];
-    for (let i=0; i<contents.length; i++) {
-        data.push({html: contents[i].innerHTML});
-    }
-
-    store(page, data);
+    html = document.getElementsByClassName("details-container")[0].innerHTML;
+    store(page, {html: html});
 }
 
 

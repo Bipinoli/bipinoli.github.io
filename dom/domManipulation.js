@@ -6,6 +6,13 @@ function generateNavigationLink() {
     navLink.addEventListener("click", navSelected);
     navLink.appendChild(document.createTextNode("link"));
     document.getElementsByClassName("navigation-links")[0].appendChild(navLink);
+
+    let fillContent = generatePlaceHolderContent();
+    let detailsContainer = document.getElementsByClassName("details-container")[0];
+    while (detailsContainer.firstChild) {
+        detailsContainer.removeChild(detailsContainer.firstChild);
+      }
+    detailsContainer.appendChild(fillContent);
 }
 
 function replaceWithTextArea(element) {
@@ -67,7 +74,7 @@ function enableDOMElement(element) {
 }
 
 
-async function constructPage() {
+function constructPage() {
     return new Promise(function (resolve, reject) {
         fetchDoc("profile", "navlinks")
             .then(data => {
@@ -86,7 +93,7 @@ async function constructPage() {
     });
 }
 
-async function constructProfile() {
+function constructProfile() {
     function selectHtml(data, id) {
         for (let i=0; i<data.length; i++) {
             if (data[i].id == id) 
@@ -109,7 +116,7 @@ async function constructProfile() {
     });
 }
 
-async function constructContents(navHeader) {
+function constructContents(navHeader) {
     return new Promise(function (resolve, reject) {
         fetch(navHeader)
         .then(data => {
@@ -119,6 +126,7 @@ async function constructContents(navHeader) {
                 html += data[i].html;
             }
             document.getElementsByClassName("details-container")[0].innerHTML = html;
+            console.log("contents constructed");
             resolve();
         })
         .catch(err => {
@@ -126,4 +134,21 @@ async function constructContents(navHeader) {
             reject();
         });
     });
+}
+
+
+function generatePlaceHolderContent() {
+    let div = document.createElement("div");
+    div.classList.add("content");
+    div.classList.add("content-editable");
+    let h2 = document.createElement("h2");
+    h2.innerText = "Title";
+    let p1 = document.createElement("p");
+    p1.innerText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum dolorem nemo aliquid excepturi magni laborum quia sit ducimus voluptates cum nihil, sed, ea deleniti non provident aliquam possimus earum expedita et? Velit cupiditate quam fugiat? Dicta explicabo excepturi possimus similique sequi ad nostrum amet culpa voluptatibus sed rerum architecto inventore, blanditiis quod sint? Iusto modi quos rem amet neque magni sequi quo, ad quidem libero sunt magnam repudiandae temporibus! Animi, corporis aut dicta quis excepturi consequatur sunt est aperiam deleniti voluptatem eveniet, asperiores vitae ratione, doloribus quo. Quae asperiores quod inventore, sint dignissimos ipsam voluptatibus nostrum explicabo numquam dicta tempore.";
+    let p2 = document.createElement("p");
+    p2.innerText = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt debitis dolore magnam! Consequatur sit, vel eveniet sunt voluptatum eum suscipit quis quasi illo, necessitatibus mollitia sint placeat perferendis quibusdam doloremque.";
+    div.appendChild(h2);
+    div.appendChild(p1);
+    div.appendChild(p2);
+    return div;
 }

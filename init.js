@@ -1,4 +1,4 @@
-(function init() {
+(async function init() {
     initDB();
     await constructPage();
     setupListeners();
@@ -28,6 +28,7 @@ function setupListeners() {
     let addNavLinkBtn = document.getElementsByClassName("add-nav-link-btn")[0];
     addNavLinkBtn.removeEventListener("click", generateNavigationLink);
     addNavLinkBtn.addEventListener("click", generateNavigationLink);
+    console.log("listeners setup complete");
 }
 
 

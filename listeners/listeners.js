@@ -5,9 +5,13 @@ function editMode() {
 
 function navSelected() {
     console.log("navSelected");
-    globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
+    if (globalNamespace['selectedNavLink']) {
+        globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
+        preserveContents(globalNamespace['selectedNavLink'].innerText);
+    }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
+    constructContents(this.innerText);
 }
 
 

@@ -64,22 +64,18 @@ function fetchDoc(collection, doc) {
 }
 
 
-function store(collection, contents) {
+function store(collection, content) {
     collection = collection.toLowerCase();
     return new Promise(function (resolve, reject) {
-        let promises = [];
-        for (let i=0; i<contents.length; i++) {
-            promises.push(globalNamespace["db"].collection(collection).doc("" + i).set(contents[i]));
-        }
-        Promise.all(promises)
-        .then(() => {
-            console.log("stored successfully!");
-            resolve();
-        })
-        .catch((error) => {
-            console.error(error);
-            reject();
-        });
+        globalNamespace["db"].collection(collection).doc("html").set(content)
+            .then(() => {
+                console.log("stored successfully!");
+                resolve();
+            })
+            .catch(err => {
+                console.error(err);
+                reject();
+            });
     });
 }
 
