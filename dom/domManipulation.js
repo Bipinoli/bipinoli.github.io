@@ -65,3 +65,8 @@ function enableDOMElement(element) {
     delete element["originalStyle"];
     element["disableCount"] = 0;
 }
+
+
+function generatePage(navHeader) {
+    
+}

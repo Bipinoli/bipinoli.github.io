@@ -31,7 +31,7 @@ function initDB() {
 
 
 function fetch(collection) {
-    collection = collection.toLocaleLowerCase();
+    collection = collection.toLowerCase();
     return new Promise(function (resolve, reject) {
         globalNamespace["db"].collection(collection).get().then((querySnapshot) => {
             console.log("fetched successfully!");
@@ -46,8 +46,24 @@ function fetch(collection) {
 }
 
 
+function fetchDoc(collection, doc) {
+    collection = collection.toLowerCase();
+    doc = doc.toLowerCase();
+    return new Promise(function (resolve, reject) {
+        globalNamespace["db"].collection(collection).doc(doc).get()
+            .then(doc => {
+                console.log("doc fetched successfully!");
+                resolve({html: doc.data()});
+            })
+            .catch(err => {
+                console.error(err);
+            });
+  })
+}
+
+
 function store(collection, contents) {
-    collection = collection.toLocaleLowerCase();
+    collection = collection.toLowerCase();
     return new Promise(function (resolve, reject) {
         let promises = [];
         for (let i=0; i<contents.length; i++) {
@@ -67,8 +83,8 @@ function store(collection, contents) {
 
 
 function storeDoc(collection, doc, content) {
-    collection = collection.toLocaleLowerCase();
-    doc = doc.toLocaleLowerCase();
+    collection = collection.toLowerCase();
+    doc = doc.toLowerCase();
     return new Promise(function (resolve, reject) {
         globalNamespace["db"].collection(collection).doc(doc).set(content)
             .then(() => {
@@ -84,7 +100,7 @@ function storeDoc(collection, doc, content) {
 
 
 function deleteCollection(collection) {
-    collection = collection.toLocaleLowerCase();
+    collection = collection.toLowerCase();
     return new Promise(function (resolve, reject) {
         fetch(collection)
             .then(contents => {
