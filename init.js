@@ -24,6 +24,7 @@ function setupListeners() {
     setupNavListeners();
     setupContentListeners();
     setupWindowResizeListeners();
+    setupAdminModeListeners();
     
     let addNavLinkBtn = document.getElementsByClassName("add-nav-link-btn")[0];
     addNavLinkBtn.removeEventListener("click", generateNavigationLink);
@@ -64,6 +65,12 @@ function setupWindowResizeListeners() {
     window.removeEventListener("resize", reorderComponents);
     window.addEventListener("resize", reorderComponents);
 }
+
+
+function setupAdminModeListeners() {
+    document.getElementsByClassName("admin-access-btn")[0].addEventListener("click", adminMode);
+}
+
 
 function initTapSettings() {
     profileEditables = document.getElementsByClassName("profile-editable");

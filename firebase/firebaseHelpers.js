@@ -2,6 +2,7 @@ function signIn(email, password) {
     return new Promise(function (resolve, reject) {
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then(() => {
+            localStorage.setItem("signedIn", true);
             console.log("signed in successfully!");
             resolve();
         })
@@ -15,6 +16,7 @@ function signIn(email, password) {
 function signOut() {
     return new Promise(function (resolve, reject) {
         firebase.auth().signOut().then(function() {
+            localStorage.setItem("signedIn", false);
             console.log("signed out successfully!");
             resolve();
           }).catch(function(error) {

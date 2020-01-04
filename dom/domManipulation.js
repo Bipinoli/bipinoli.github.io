@@ -152,3 +152,73 @@ function generatePlaceHolderContent() {
     div.appendChild(p2);
     return div;
 }
+
+
+
+function generateSignInForm() {
+    let div = document.createElement("div");
+    div.classList.add("sign-in-form");
+    let form = document.createElement("form");
+    div.appendChild(form);
+    let emailLabel = document.createElement("label");
+    emailLabel.for = "email";
+    let b1 = document.createElement("b");
+    b1.innerText = "Email";
+    emailLabel.appendChild(b1);
+    form.appendChild(emailLabel);
+    let emailInput = document.createElement("input");
+    emailInput.type = "email";
+    emailInput.placeholder = "Enter Email";
+    emailInput.name = "email";
+    emailInput.required = true;
+    form.appendChild(emailInput);
+    let passLabel = document.createElement("label");
+    passLabel.for = "psw";
+    let b2 = document.createElement("b");
+    b2.innerText = "Password";
+    passLabel.appendChild(b2);
+    form.appendChild(passLabel);
+    let passInput = document.createElement("input");
+    passInput.type = "password";
+    passInput.placeholder = "Enter Password";
+    passInput.name = "psw";
+    passInput.required = true;
+    form.appendChild(passInput);
+    let btn1 = document.createElement("button");
+    btn1.type = "submit";
+    btn1.classList.add("btn");
+    btn1.classList.add("verify-btn");
+    btn1.innerText = "Verify";
+    form.appendChild(btn1);
+    let btn2 = document.createElement("button");
+    btn2.type = "button";
+    btn2.classList.add("btn");
+    btn2.classList.add("cancel-btn");
+    btn2.innerText = "Close";
+    form.appendChild(btn2);
+    return div;
+
+
+//     <div class="sign-in-form">
+//       <form>
+//     <label for="email"><b>Email</b></label>
+//     <input type="text" placeholder="Enter Email" name="email" required>
+
+//     <label for="psw"><b>Password</b></label>
+//     <input type="password" placeholder="Enter Password" name="psw" required>
+
+//     <button type="submit" class="btn verify-btn">Verify</button>
+//     <button type="button" class="btn cancel-btn">Close</button>
+//   </form>
+//   </div>
+}
+
+
+function mountSignInForm() {
+    document.getElementsByTagName("body")[0].appendChild(generateSignInForm());
+}
+
+function unmountSignInForm() {
+    let body = document.getElementsByTagName("body")[0];
+    body.removeChild(body.lastElementChild);
+}

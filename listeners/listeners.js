@@ -66,3 +66,8 @@ function tapHandler() {
 function adaptTextArea() {
     this.style.height = "" + this.scrollHeight + "px";
 }
+
+
+function adminMode() {
+    console.log("admin mode");
+}

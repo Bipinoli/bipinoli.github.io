@@ -1,4 +1,4 @@
 globalNamespace = {
     selectedNavLink: null,
-    db: null
+    db: null,
 }
