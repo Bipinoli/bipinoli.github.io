@@ -68,6 +68,29 @@ function adaptTextArea() {
 }
 
 
-function adminMode() {
+function adminAccessBtnBehaviour() {
     console.log("admin mode");
+    if (localStorage.getItem("signedIn") == "true") {
+        signOut().then(() => {
+            document.getElementsByClassName("admin-access-btn")[0].innerText = "Admin Access";
+        });
+    } else {
+        mountSignInForm();
+    }
+}
+
+
+function signInHandler() {
+    console.log("sign in");
+    let form = document.getElementsByClassName("sign-in-form")[0].children[0];
+    let email = form.elements["email"].value;
+    let password = form.elements["psw"].value;
+    signIn(email, password).then(() => {
+        document.getElementsByClassName("admin-access-btn")[0].innerText = "Normal Access";
+        unmountSignInForm();
+    });
+}
+
+function signInCancel() {
+    unmountSignInForm();
 }

@@ -68,7 +68,7 @@ function setupWindowResizeListeners() {
 
 
 function setupAdminModeListeners() {
-    document.getElementsByClassName("admin-access-btn")[0].addEventListener("click", adminMode);
+    document.getElementsByClassName("admin-access-btn")[0].addEventListener("click", adminAccessBtnBehaviour);
 }
 
 

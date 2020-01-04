@@ -13,6 +13,7 @@ function signIn(email, password) {
     });
 }
 
+
 function signOut() {
     return new Promise(function (resolve, reject) {
         firebase.auth().signOut().then(function() {
