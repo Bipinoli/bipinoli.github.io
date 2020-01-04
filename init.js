@@ -2,12 +2,10 @@
     initDB();
     await constructPage();
     setupListeners();
+    adminButtonsSupply();
     selectFirstNavLink();
     reorderComponents();
     initTapSettings();
-    let contentRevealBtn = document.getElementsByClassName("content-reveal-btn")[0];
-    contentRevealBtn.removeEventListener("click", revealContents);
-    contentRevealBtn.addEventListener("click", revealContents);
     console.log("ok initalized properly. Ready to go!");
 })();
 
@@ -28,7 +26,8 @@ function setupListeners() {
     
     let addNavLinkBtn = document.getElementsByClassName("add-nav-link-btn")[0];
     addNavLinkBtn.removeEventListener("click", generateNavigationLink);
-    addNavLinkBtn.addEventListener("click", generateNavigationLink);
+    if (localStorage.getItem("signedIn") == "true")
+        addNavLinkBtn.addEventListener("click", generateNavigationLink);
     console.log("listeners setup complete");
 }
 
@@ -46,8 +45,10 @@ function setupProfileListeners() {
     for (let i=0; i<profileEditables.length; i++) {
         profileEditables[i].removeEventListener("dblclick", editMode);
         profileEditables[i].removeEventListener("touchstart", tapHandler);
-        profileEditables[i].addEventListener("dblclick", editMode);
-        profileEditables[i].addEventListener("touchstart", tapHandler);
+        if (localStorage.getItem("signedIn") == "true") {
+            profileEditables[i].addEventListener("dblclick", editMode);
+            profileEditables[i].addEventListener("touchstart", tapHandler);
+        }
     }
 }
 
@@ -56,10 +57,20 @@ function setupContentListeners() {
     for (let i=0; i<contentEditables.length; i++) {
         contentEditables[i].removeEventListener("dblclick", editMode);
         contentEditables[i].removeEventListener("touchstart", tapHandler);
-        contentEditables[i].addEventListener("dblclick", editMode);
-        contentEditables[i].addEventListener("touchstart", tapHandler);
+        if (localStorage.getItem("signedIn") == "true") {
+            contentEditables[i].addEventListener("dblclick", editMode);
+            contentEditables[i].addEventListener("touchstart", tapHandler);
+        }
     }
 }
+
+function setupContentRevealListeners() {
+    let contentRevealBtn = document.getElementsByClassName("content-reveal-btn")[0];
+    contentRevealBtn.removeEventListener("click", revealContents);
+    if (localStorage.getItem("signedIn") == "true")
+        contentRevealBtn.addEventListener("click", revealContents);
+}
+
 
 function setupWindowResizeListeners() {
     window.removeEventListener("resize", reorderComponents);
@@ -68,9 +79,15 @@ function setupWindowResizeListeners() {
 
 
 function setupAdminModeListeners() {
-    document.getElementsByClassName("admin-access-btn")[0].addEventListener("click", adminAccessBtnBehaviour);
+    let adminBtn = document.getElementsByClassName("admin-access-btn")[0];
+    adminBtn.removeEventListener("click", adminAccessBtnBehaviour);
+    adminBtn.addEventListener("click", adminAccessBtnBehaviour);
+    if (localStorage.getItem("signedIn") == "true") {
+        adminBtn.innerText = "Normal Access";
+        return;
+    } 
+    adminBtn.innerText = "Admin Access";
 }
-
 
 function initTapSettings() {
     profileEditables = document.getElementsByClassName("profile-editable");

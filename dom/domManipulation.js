@@ -199,8 +199,7 @@ function generateSignInForm() {
     form.appendChild(btn2);
 
     form.addEventListener("submit", signInHandler);
-    // form.addEventListener("submit", () => console.log("submit"));
-    form.addEventListener("cancel", signInCancel);
+    btn2.addEventListener("click", signInCancel);
 
     return div;
 

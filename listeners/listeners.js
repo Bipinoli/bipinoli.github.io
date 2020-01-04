@@ -73,6 +73,8 @@ function adminAccessBtnBehaviour() {
     if (localStorage.getItem("signedIn") == "true") {
         signOut().then(() => {
             document.getElementsByClassName("admin-access-btn")[0].innerText = "Admin Access";
+            adminButtonsSupply();
+            setupListeners();
         });
     } else {
         mountSignInForm();
@@ -88,9 +90,21 @@ function signInHandler() {
     signIn(email, password).then(() => {
         document.getElementsByClassName("admin-access-btn")[0].innerText = "Normal Access";
         unmountSignInForm();
+        adminButtonsSupply();
+        setupListeners();
     });
 }
 
 function signInCancel() {
     unmountSignInForm();
+}
+
+function adminButtonsSupply() {
+    if (localStorage.getItem("signedIn") == "true") {
+        document.getElementsByClassName("content-reveal-btn")[0].style.display = "block";
+        document.getElementsByClassName("add-nav-link-btn")[0].style.display = "block";
+        return;
+    }
+    document.getElementsByClassName("content-reveal-btn")[0].style.display = "none";
+    document.getElementsByClassName("add-nav-link-btn")[0].style.display = "none";
 }
