@@ -76,7 +76,7 @@ function enableDOMElement(element) {
 
 function constructPage() {
     return new Promise(function (resolve, reject) {
-        fetchDoc("profile", "navlinks")
+        fetchDocData("profile", "navlinks")
             .then(data => {
                 let promises = [constructProfile(), constructContents(data.data[0])];
                 Promise.all(promises)
@@ -101,7 +101,7 @@ function constructProfile() {
         }
     }
     return new Promise(function (resolve, reject) {
-        fetch("profile")
+        fetchData("profile")
         .then(data => {
             document.getElementsByClassName("name-section")[0].innerHTML = selectHtml(data, "namesection");
             document.getElementsByClassName("pic-section")[0].innerHTML = selectHtml(data, "picsection");
@@ -118,7 +118,7 @@ function constructProfile() {
 
 function constructContents(navHeader) {
     return new Promise(function (resolve, reject) {
-        fetch(navHeader)
+        fetchData(navHeader)
         .then(data => {
             console.log(data);
             let html = "";

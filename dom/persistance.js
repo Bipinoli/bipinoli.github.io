@@ -1,7 +1,7 @@
 function preserveContents(page = globalNamespace.selectedNavLink.innerText) {
     let contents = document.getElementsByClassName("content");
     html = document.getElementsByClassName("details-container")[0].innerHTML;
-    store(page, {html: html});
+    storeData(page, {html: html});
 }
 
 
@@ -12,23 +12,23 @@ function preserveProfile() {
 
 function preserveNavigation() {
     let navigation = document.getElementsByClassName("navigate-section")[0];
-    storeDoc("profile", "navigationSection", {html: navigation.innerHTML});
+    storeDocData("profile", "navigationSection", {html: navigation.innerHTML});
 
     let navLinks = document.getElementsByClassName("nav-link");
     let navs = [];
     for (let i=0; i<navLinks.length; i++) {
         navs.push(navLinks[i].innerText.toLowerCase());
     }
-    storeDoc("profile", "navLinks", {navs: navs});
+    storeDocData("profile", "navLinks", {navs: navs});
 }
 
 function preserveBio() {
     let nameSection = document.getElementsByClassName("name-section")[0];
-    storeDoc("profile", "nameSection", {html: nameSection.innerHTML});
+    storeDocData("profile", "nameSection", {html: nameSection.innerHTML});
 
     let profilePic = document.getElementsByClassName("pic-section")[0];
-    storeDoc("profile", "picSection", {html: profilePic.innerHTML});
+    storeDocData("profile", "picSection", {html: profilePic.innerHTML});
 
     let aboutSection = document.getElementsByClassName("about-section")[0];
-    storeDoc("profile", "aboutSection", {html: aboutSection.innerHTML});
+    storeDocData("profile", "aboutSection", {html: aboutSection.innerHTML});
 }
