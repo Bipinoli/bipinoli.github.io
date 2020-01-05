@@ -56,7 +56,7 @@ function fetchDoc(collection, doc) {
         globalNamespace["db"].collection(collection).doc(doc).get()
             .then(doc => {
                 console.log("doc fetched successfully!");
-                let retval = {data: doc.data().navs};
+                let retval = {data: doc.data().html};
                 console.log(retval);
                 resolve(retval);
             })

@@ -78,6 +78,7 @@ function constructPage() {
     return new Promise(function (resolve, reject) {
         fetchDocData("profile", "navlinks")
             .then(data => {
+                console.log("cosntruct : " + data);
                 let promises = [constructProfile(), constructContents(data.data[0])];
                 Promise.all(promises)
                     .then(() => resolve())

@@ -7,7 +7,8 @@ function navSelected() {
     console.log("navSelected");
     if (globalNamespace['selectedNavLink']) {
         globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
-        preserveContents(globalNamespace['selectedNavLink'].innerText);
+        if (localStorage.getItem("signedIn") == "true")
+            preserveContents(globalNamespace['selectedNavLink'].innerText);
     }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;

@@ -34,7 +34,8 @@ async function fetchDocData(collection, doc) {
         try {
             let data = await fetch(collection);
             globalNamespace.cacheData[collection] = data;
-            let toResolve = await fetchDoc(collection, doc);
+            toResolve = await fetchDoc(collection, doc);
+            console.log("fetchDocData: ", toResolve);
         } catch (e) {
             toReject = e;
         }
@@ -42,8 +43,9 @@ async function fetchDocData(collection, doc) {
     return new Promise(function (resolve, reject) {
         if (toReject)
             reject(toReject);
-        else
+        else {
             resolve(toResolve);
+        }
     });
 }
 
