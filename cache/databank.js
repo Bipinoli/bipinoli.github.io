@@ -32,12 +32,9 @@ async function fetchDocData(collection, doc) {
     }
     else {
         try {
-            let data = await fetchDoc(collection, doc);
-            if (!(collection in globalNamespace.cacheData))
-                globalNamespace.cacheData[collection] = {doc: data};
-            else
-                globalNamespace.cacheData[collection][doc] = data;
-            toResolve = data;
+            let data = await fetch(collection);
+            globalNamespace.cacheData[collection] = data;
+            let toResolve = await fetchDoc(collection, doc);
         } catch (e) {
             toReject = e;
         }
@@ -69,9 +66,8 @@ function storeDocData(collection, doc, content) {
         storeDoc(collection, doc, content)
         .then(() => {
             if (!(collection in globalNamespace.cacheData))
-                globalNamespace.cacheData[collection] = {doc: data};
-            else
-                globalNamespace.cacheData[collection][doc] = data;
+                globalNamespace.cacheData[collection] = {};
+            globalNamespace.cacheData[collection][doc] = data;
         })
         .catch(err => {
             reject(err);
