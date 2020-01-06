@@ -108,3 +108,27 @@ function adminButtonsSupply() {
     document.getElementsByClassName("content-reveal-btn")[0].style.display = "none";
     document.getElementsByClassName("add-nav-link-btn")[0].style.display = "none";
 }
+
+
+function navMouseDownHandler() {
+    this["latestEvent"] = Date.now();
+    setTimeout(() => {
+        if (this["latestEvent"]) {
+            console.log("click and hold");
+            navLinkDeleteMode.bind(this)();
+        }
+    }, 1200);
+}
+
+function navMouseUpHandler() {
+    if (Date.now() - this["latestEvent"] < 1200) {
+        console.log("click");
+        delete this["latestEvent"];
+        navSelected.bind(this)();
+    }
+}
+
+
+function navLinkDeleteMode() {
+    console.log(this.innerText + " in delete mode.");
+}
