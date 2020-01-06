@@ -100,6 +100,16 @@ function generateSignInForm() {
 }
 
 
-function generateDeleteBtnAlong(element) {
-
+function generateCrossBtn() {
+    let div = document.createElement("div");
+    div.classList.add("cross-btn");
+    return div;
 }
+
+
+function generateDarkWindowPane() {
+    let div = document.createElement("div");
+    div.classList.add("dark-overlay-window-pane");
+    return div;
+}
+

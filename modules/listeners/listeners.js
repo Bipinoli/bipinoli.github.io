@@ -131,4 +131,6 @@ function navMouseUpHandler() {
 
 function navLinkDeleteMode() {
     console.log(this.innerText + " in delete mode.");
+    attachCrossBtn(this);
+    darkWindowPaneBackground(this);
 }

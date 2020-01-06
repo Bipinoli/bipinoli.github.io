@@ -129,3 +129,34 @@ function unmountSignInForm() {
     let body = document.getElementsByTagName("body")[0];
     body.removeChild(body.lastElementChild);
 }
+
+
+function attachCrossBtn(element) {
+    if (element["attachedCrossBtn"]) return;
+    let div = document.createElement("div");
+    div.style.display = "flex";
+    element.parentElement.insertBefore(div, element);
+    element.parentElement.removeChild(element);
+    div.appendChild(element);
+    let crossBtn = generateCrossBtn();
+    div.appendChild(crossBtn);
+    element["attachedCrossBtn"] = crossBtn; 
+}
+
+function detachCrossBtn(element) {
+    element.parentElement.removeChild(element.attachedCrossBtn);
+    element["attachedCrossBtn"] = null;
+    let grandParent = element.parentElement.parentElement;
+    let toRemove = element.parentElement;
+    grandParent.insertBefore(element, element.parentElement);
+    grandParent.removeChild(toRemove);
+}
+
+function darkWindowPaneBackground(element) {
+    let pane = generateDarkWindowPane();
+    element.style.zIndex = "2";
+    pane.style.zIndex = "1";
+    let body = document.getElementsByTagName("body")[0];
+    body.appendChild(pane);
+    body["pane"] = pane;
+}  
