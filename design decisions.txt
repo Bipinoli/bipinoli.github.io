@@ -72,3 +72,25 @@ Ideas for preserving edits:
 7. only allow the editables in profile to be edited if there is no other editable in profile being edited.
 8. only allow the user to sign out if there is nothing being edited.
 9. only allow the user to add a new nav link if there is nothing being edited.
+
+
+
+
+Ideas for Creating new content navigation:
+
+1. Only add new nav link when nothing is being edited.
+2. Create dummy placeholder content along with nav link.
+3. don't save the link when it was created 
+4. only save it when anything in it is changed eg. content, link name
+
+
+
+
+Ideas for deleteing nav link:
+
+1. Click hold or touch hold should bring the little x btn on top right of the nav link.
+2. On clicking the little x btn confirmation must come asking as to really delete the header along with
+   all its contents or not? 
+3. On clicking on the link besides the x the link must go to the normal behaviour.
+4. When the nav link is deleted all its contents must be deleted along with it.
+5. When nav link enters this mode with touch hold everything else must be dimmed and disabled.
