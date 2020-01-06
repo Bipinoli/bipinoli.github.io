@@ -23,19 +23,46 @@ possible repurcussions:
    the edits when the nav is changed, it can cause problemns. Since, the cache data will only update
    after the database has been updated which is asynchoronous task. The view might show the old 
    inconsistent data from the cache.
+   
+2. Don't allow the name of the navigation tab to be changed if there is any content inside it in edit mode.
+   Otherwise two edits might collide causing all sorts of problems. 
+   For example: the name of the nav link might have been changed but content might be saved under the 
+   old name. Since old name no longer exists, new entry will be added with the same content but under
+   old name. Thereby causing duplicate entries under two different nav links.
+
+3. Suppose we are saving the updated data when the edit mode is about to be turned off. But after editing 
+   with content still in edit mode, the user signed out instead. This means the edit mode of the content 
+   was never turned off, so the edits won't be saved in the database.
+
+4. What if some contents or profile (about section, nav section's nav link names etc.) were being edited and 
+   without closing them the user decided to add a new nav link instead. Now if the new nav link is updated in 
+   the database by updating the whole profile then the contents that were still in editmode will be updated as 
+   a textarea instead of div content. 
+
+5. Say a content is being edited and without turning it off new content is edited. This is sure to cause trouble
+   because when any one content is about to be turned off from the edit mode. The contents as a whole can be 
+   saved which causes the content still in edit mode be saved as a textarea. 
+
+6. Say that the name of the nav link has been changed. In doing so the innerText will instantly change but 
+   due to slow network the database might still haven't yet been changed. Which means the cache hasn't been
+   changed either. So, if the user tries to click this link with new name no data for it will be found in cache
+   and similarly no data may be found in the database. Which means there won't be any content inside it. But,
+   after a while it may just work fine when the nav link is seleted as by then the database could have been updated.
 
 
 
 
-Idea for preserving edits:
+Ideas for preserving edits:
 
-1. Whenever a content is changed; note that under navlink name.
-2. In the meantime if navlink itself is modified; note that under the old navlink name.
-3. navlink should hold things like:
-   eg: 
-		navlink = "research"
-		toPreserveContents = "true"
-		newName = "amazing research"
-4. When nav tab is about to change check if the nav has dirty edits that needs to be saved.
-5. If admin mode is about to be turned off and there are dirty edits which hasn't been saved 
-   then first preserve those before switching admin mode.
+1. When a content is about to be switched off from admin mode check if it has changed.
+   If it has been changed update it in the database.
+2. When profile sections (name section, about section, pic section) are about to be
+   switched off from admin mode check if it has changed. If it has been changed 
+   update it in the database.
+3. don't allow navigation tab to be changed if there is any content in edit mode.
+4. don't allow the contents to be changed if there is any nav links being edited.
+5. don't allow the name of the navigation tab to be changed if there is any content in edit mode.
+6. only allow the content to be edited if there is no other content being edited.
+7. only allow the editables in profile to be edited if there is no other editable in profile being edited.
+8. only allow the user to sign out if there is nothing being edited.
+9. only allow the user to add a new nav link if there is nothing being edited.
