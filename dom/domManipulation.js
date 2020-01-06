@@ -160,7 +160,6 @@ function generateSignInForm() {
     let div = document.createElement("div");
     div.classList.add("sign-in-form");
     let form = document.createElement("form");
-    // form.action = "#";
     div.appendChild(form);
     let emailLabel = document.createElement("label");
     emailLabel.for = "email";
@@ -199,7 +198,12 @@ function generateSignInForm() {
     btn2.innerText = "Close";
     form.appendChild(btn2);
 
-    form.addEventListener("submit", signInHandler);
+    // form.addEventListener("submit", signInHandler);
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        console.log('sign in request');
+        signInHandler();
+    });
     btn2.addEventListener("click", signInCancel);
 
     return div;

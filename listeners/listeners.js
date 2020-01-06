@@ -84,7 +84,6 @@ function adminAccessBtnBehaviour() {
 
 
 function signInHandler() {
-    console.log("sign in");
     let form = document.getElementsByClassName("sign-in-form")[0].children[0];
     let email = form.elements["email"].value;
     let password = form.elements["psw"].value;
