@@ -1,6 +1,4 @@
-import {generateNavigationLink, generatePlaceHolderContent, generateSignInForm, generateDeleteBtnAlong} from "./elementGenerators";
-
-export function replaceWithTextArea(element) {
+function replaceWithTextArea(element) {
     textarea = document.createElement("textarea");
     textarea.classList.add("edit-mode-signifier");
     textarea.addEventListener("dblclick", replaceWithOriginalElement);
@@ -59,7 +57,7 @@ function enableDOMElement(element) {
 }
 
 
-export function constructPage() {
+function constructPage() {
     return new Promise(function (resolve, reject) {
         fetchDocData("profile", "navlinks")
             .then(data => {
@@ -123,11 +121,11 @@ function constructContents(navHeader) {
 }
 
 
-export function mountSignInForm() {
+function mountSignInForm() {
     document.getElementsByTagName("body")[0].appendChild(generateSignInForm());
 }
 
-export function unmountSignInForm() {
+function unmountSignInForm() {
     let body = document.getElementsByTagName("body")[0];
     body.removeChild(body.lastElementChild);
 }

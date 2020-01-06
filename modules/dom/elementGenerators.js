@@ -1,4 +1,4 @@
-export function generateNavigationLink() {
+function generateNavigationLink() {
     navLink = document.createElement("div");
     navLink.classList.add("nav-link");
     navLink.classList.add("profile-editable");
@@ -16,7 +16,7 @@ export function generateNavigationLink() {
 }
 
 
-export function generatePlaceHolderContent() {
+function generatePlaceHolderContent() {
     let div = document.createElement("div");
     div.classList.add("content");
     div.classList.add("content-editable");
@@ -33,7 +33,7 @@ export function generatePlaceHolderContent() {
 }
 
 
-export function generateSignInForm() {
+function generateSignInForm() {
     let div = document.createElement("div");
     div.classList.add("sign-in-form");
     let form = document.createElement("form");
@@ -100,6 +100,6 @@ export function generateSignInForm() {
 }
 
 
-export function generateDeleteBtnAlong(element) {
+function generateDeleteBtnAlong(element) {
 
 }
