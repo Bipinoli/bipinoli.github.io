@@ -1,0 +1,41 @@
+bug lists:
+
+1. preserving edits (update)
+	1. when nav link name is changed
+	2. when name section, pic section or about section is changed
+	3. when should the contents be preserved?
+		-> should it be preserved every time nav is changed?
+		-> should it be only presearved when it has been edited?
+		-> reveal contents when closed; should database be updated?
+2. create
+	1. adding new nav link
+	2. when to save name of new nav link 
+	3. adding placeholder content for easy edit 
+3. delete
+	1. how to delete nav link and its associated contents? should confirmation pop up appear?
+
+
+
+
+possible repurcussions: 
+
+1. What if nav is deselected and then again seleted in a small time span. If we are only saving
+   the edits when the nav is changed, it can cause problemns. Since, the cache data will only update
+   after the database has been updated which is asynchoronous task. The view might show the old 
+   inconsistent data from the cache.
+
+
+
+
+Idea for preserving edits:
+
+1. Whenever a content is changed; note that under navlink name.
+2. In the meantime if navlink itself is modified; note that under the old navlink name.
+3. navlink should hold things like:
+   eg: 
+		navlink = "research"
+		toPreserveContents = "true"
+		newName = "amazing research"
+4. When nav tab is about to change check if the nav has dirty edits that needs to be saved.
+5. If admin mode is about to be turned off and there are dirty edits which hasn't been saved 
+   then first preserve those before switching admin mode.

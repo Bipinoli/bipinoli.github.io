@@ -198,7 +198,6 @@ function generateSignInForm() {
     btn2.innerText = "Close";
     form.appendChild(btn2);
 
-    // form.addEventListener("submit", signInHandler);
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         console.log('sign in request');
