@@ -7,6 +7,12 @@ bug lists:
 		-> should it be preserved every time nav is changed?
 		-> should it be only presearved when it has been edited?
 		-> reveal contents when closed; should database be updated?
+	4. should the edits be instantly updated in cache?
+		-> benefit: even if the data hasn't been saved yet due to slow network
+					the view will still show the latest edit
+		-> drawbacks: what if database edit failed eventually? Should the view
+					be restored. Wouldn't the abrupt change feel glitchy?
+					What if the user was already editing on top of previous edit?
 2. create
 	1. adding new nav link
 	2. when to save name of new nav link 
