@@ -76,3 +76,10 @@ function storeDocData(collection, doc, content) {
         });
     });
 }
+
+export {
+    fetchData,
+    fetchDocData,
+    storeData,
+    storeDocData
+};
