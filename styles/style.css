@@ -1,13 +1,64 @@
+/* Styling Tags */
+
 * {
     margin: 0;
     border: 0;
     box-sizing: border-box;
 }
-
 html, body {
     height: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+p {
+    margin-top: 10px;
+}
+form {
+    margin: 6px;
+    padding: 6px;
+    background-color: #f1f1f6;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 25vw;
+    height: fit-content;
+    color: #565656;
+    box-shadow: 0px 0px 4px #aaa;
+}
+button {
+    border: none;
+}
+button:hover {
+    cursor: pointer;
+}
+input {
+    padding: 6px;
+    margin: 6px;
+}
+label {
+    padding: 6px;
+}
+a {
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Styling Classes */
 
 .main {
     display: flex;
@@ -16,7 +67,6 @@ html, body {
     width: 100%;
     height: 100%;
 }
-
 .master-container {
     display: grid;
     grid-template-columns: 400px auto;
@@ -26,7 +76,6 @@ html, body {
     width: 100%;
     color: #565656;
 }
-
 .profile-container {
     box-shadow: 1px 0px 3px rgba(88, 72, 72, 0.2);
     display: flex;
@@ -43,7 +92,6 @@ html, body {
 .profile-container {
     -ms-overflow-style: none;
 } 
-
 .details-master-container {
     overflow-y: auto;
     -ms-overflow-style: none;
@@ -51,12 +99,9 @@ html, body {
 .details-master-container::-webkit-scrollbar {
     display: none;
 }
-
-
 .details-container {
     margin-left: 7px;
 }
-
 .name-section {
     display: flex;
     flex-direction: column;
@@ -81,22 +126,16 @@ html, body {
 .quick-link:first-child {
     border-left: none;
 }
-
-
 .pic-section {
     margin-top: 10px;
     margin-bottom: 20px;
 }
-
-
 .about-section {
     margin-bottom: 20px;
     text-align: center;
     padding: 0 20px;
 
 }
-
-
 .navigate-section {
     display: flex;
     flex-direction: column;
@@ -167,8 +206,6 @@ html, body {
     cursor: pointer;
     box-shadow: 0 0 5px white;
 }
-
-
 .pic-section>img {
     height: 250px;
     width: 250px;
@@ -176,9 +213,6 @@ html, body {
     border: 1px solid #ddd;
     padding: 5px;
 }
-
-
-
 .details-master-container {
     display: flex;
     flex-direction: column;
@@ -207,12 +241,6 @@ html, body {
     cursor: pointer;
 }
 
-p {
-    margin-top: 10px;
-}
-
-
-
 .edit-mode-signifier {
     width: 100%;
     background-color: aquamarine;
@@ -221,10 +249,6 @@ p {
     margin: 10px;
     padding: 10px;
 }
-
-
-
-
 .sign-in-form {
     background-color: rgba(0,0,0,0.3);
     justify-content: center;
@@ -235,48 +259,16 @@ p {
     position: absolute;
     top: 0px;
     left: 0px;
-  }
-  
-form {
-    margin: 6px;
-    padding: 6px;
-    background-color: #f1f1f6;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    width: 25vw;
-    height: fit-content;
-    color: #565656;
-    box-shadow: 0px 0px 4px #aaa;
 }
-
-button {
-    border: none;
-}
-button:hover {
-    cursor: pointer;
-}
-
 .btn {
     padding: 15px 6px;
     color: white;
     background-color: #3b444b;
     margin-top: 5px;
 }
-
 .cancel-btn {
     background-color: #f17362;
 }
-
-input {
-    padding: 6px;
-    margin: 6px;
-}
-
-label {
-    padding: 6px;
-}
-
 .cross-btn {
     width: 20px;
     height: 20px;
@@ -292,7 +284,6 @@ label {
     box-shadow: 0px 0px 10px black;
     cursor: pointer;
 }
-
 .masking-overley-window-pane {
     position: absolute;
     top: 0;
@@ -306,6 +297,23 @@ label {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Media Queries */
 
 @media only screen and (max-width: 800px) {
     .master-container {
