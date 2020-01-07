@@ -4,17 +4,23 @@
     setupListeners();
     setupContentRevealListeners();
     adminButtonsSupply();
-    selectFirstNavLink();
+    setupNavLinkSelection();
     reorderComponents();
     initTapSettings();
     console.log("ok initalized properly. Ready to go!");
 })();
 
 
-function selectFirstNavLink() {
-    nav = document.getElementsByClassName("navigation-links")[0].children[0];
-    nav.classList.add("chosen-nav-link");
-    globalNamespace['selectedNavLink'] = nav;
+function setupNavLinkSelection() {
+    let navs = document.getElementsByClassName("navigation-links")[0].children;
+    for (let i=0; i<navs.length; i++) {
+        if (navs[i].classList.contains("chosen-nav-link")) {
+            globalNamespace["selectedNavLink"] = navs[i];
+            return;
+        }
+    }
+    navs[0].classList.add("chosen-nav-link");
+    globalNamespace["selectedNavLink"] = navs[0];
 }
 
 
@@ -104,11 +110,13 @@ function initTapSettings() {
 }
 
 function detachNavLinkEventListeners(navLink) {
+    console.log("detaching listeners of ", navLink.innerText);
     navLink.removeEventListener("mousedown", navMouseDownHandler);
     navLink.removeEventListener("mouseup", navMouseUpHandler);
 }
 
 function attachNavLinkEventListeners(navLink) {
+    console.log("attaching listeners of ", navLink.innerText);
     navLink.addEventListener("mousedown", navMouseDownHandler);
     navLink.addEventListener("mouseup", navMouseUpHandler);
 }

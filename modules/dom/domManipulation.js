@@ -25,15 +25,15 @@ function replaceWithOriginalElement() {
     elem.style.display = this["displayToResurrect"];
 
     removeMaskingPane(this);
-    
-    preserve(this);
-    
-    this.parentElement.removeChild(this);
 
     if (this["affectedElement"]) {
         enableDOMElement(this["affectedElement"]);
         delete this["affectedElement"];
     }
+
+    this.parentElement.removeChild(this);
+    preserve(elem);
+
     setupListeners();
 }
 

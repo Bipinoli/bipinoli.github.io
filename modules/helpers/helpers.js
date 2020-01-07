@@ -9,3 +9,8 @@ function formHtmlTagsFromEncode(text) {
     text = text.replace(/&gt;/g, ">");
     return text;
 }
+
+function removeGrammarlyHtml(text) {
+    text = text.replace(/<grammarly-extension(.|\n)*<\/grammarly-extension>/g, "");
+    return text;
+}

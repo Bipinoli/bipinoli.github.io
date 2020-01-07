@@ -100,8 +100,6 @@ function deleteCollectionData(collection) {
             console.log(collection);
             storeDocData("profile", "navlinks", {"html": updatedNavLinks})
             .then(() => {
-                // update profile section
-                // TODO:: 
                 resolve();
             })
             .catch((err) => reject(err));

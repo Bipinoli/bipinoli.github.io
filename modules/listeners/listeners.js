@@ -115,7 +115,8 @@ function navMouseDownHandler() {
     setTimeout(() => {
         if (this["latestEvent"]) {
             console.log("click and hold");
-            navLinkDeleteMode.bind(this)();
+            if (localStorage.getItem("signedIn") == "true")
+                navLinkDeleteMode.bind(this)();
         }
     }, 1200);
 }
@@ -160,6 +161,8 @@ function crossBtnClickHandler() {
     .then(() => {
         attachedCrossBtn.parentElement.removeChild(attachedCrossBtn);
         maskingPane.parentElement.removeChild(maskingPane);
+        toDelete.parentElement.removeChild(toDelete);
+        preserveNavigation();
     })
     .catch(err => console.error(err));
 }
