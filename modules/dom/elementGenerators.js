@@ -23,6 +23,22 @@ function generatePlaceHolderContent() {
 }
 
 
+function generateCrossBtn() {
+    let div = document.createElement("div");
+    div.classList.add("cross-btn");
+    div.addEventListener("click", crossBtnClickHandler);
+    return div;
+}
+
+
+function generateMaskingPane() {
+    let div = document.createElement("div");
+    div.classList.add("masking-overley-window-pane");
+    return div;
+}
+
+
+
 function generateSignInForm() {
     let div = document.createElement("div");
     div.classList.add("sign-in-form");
@@ -90,16 +106,8 @@ function generateSignInForm() {
 }
 
 
-function generateCrossBtn() {
-    let div = document.createElement("div");
-    div.classList.add("cross-btn");
-    div.addEventListener("click", crossBtnClickHandler);
-    return div;
-}
 
 
-function generateMaskingPane() {
-    let div = document.createElement("div");
-    div.classList.add("masking-overley-window-pane");
-    return div;
+function generateFallbackContentForNetworkError() {
+    
 }
