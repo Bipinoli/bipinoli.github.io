@@ -43,10 +43,9 @@ function setupNavListeners() {
     navs = document.getElementsByClassName("nav-link")
     for (let i=0; i<navs.length; i++) {
         navs[i].removeEventListener("mousedown", navMouseDownHandler);
-        navs[i].addEventListener("mousedown", navMouseDownHandler);
         navs[i].removeEventListener("mouseup", navMouseUpHandler);
+        navs[i].addEventListener("mousedown", navMouseDownHandler);
         navs[i].addEventListener("mouseup", navMouseUpHandler);
-
     }
 }
 
