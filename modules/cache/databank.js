@@ -66,7 +66,7 @@ function storeData(collection, content) {
 function storeDocData(collection, doc, content) {
     return new Promise(function (resolve, reject) {
         storeDoc(collection, doc, content)
-        .then(() => {
+        .then((data) => {
             if (!(collection in globalNamespace.cacheData))
                 globalNamespace.cacheData[collection] = {};
             globalNamespace.cacheData[collection][doc] = data;
@@ -79,11 +79,32 @@ function storeDocData(collection, doc, content) {
 
 
 function deleteCollectionData(collection) {
+    collection = collection.toLowerCase();
     return new Promise(function (resolve, reject) {
         deleteCollection(collection)
         .then(() => {
             delete globalNamespace.cacheData[collection];
-            resolve();
+
+            // update list of collection
+            let updatedNavLinks = [];
+            let profile = globalNamespace.cacheData.profile;
+            for (let i=0; i<profile.length; i++) {
+                if (profile[i]['id'] == "navlinks") {
+                    for (let j=0; j<profile[i]['html'].length; j++) {
+                        if (profile[i]['html'][j] != collection)
+                            updatedNavLinks.push(profile[i]['html'][j]);
+                    }
+                }
+            }
+            console.log(updatedNavLinks);
+            console.log(collection);
+            storeDocData("profile", "navlinks", {"html": updatedNavLinks})
+            .then(() => {
+                // update profile section
+                // TODO:: 
+                resolve();
+            })
+            .catch((err) => reject(err));
         })
         .catch(err => reject(err));
     });
