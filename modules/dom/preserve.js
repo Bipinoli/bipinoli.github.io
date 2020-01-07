@@ -60,6 +60,7 @@ function preserve(element) {
     }
     else {
         preserveContents();
+        preserveProfile();
     }
     delete element["oldInnerText"];
 }
