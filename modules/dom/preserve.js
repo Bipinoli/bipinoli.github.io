@@ -28,8 +28,6 @@ function preserveNavigation() {
         storeDocData("profile", "navigationSection", {html: removeGrammarlyHtml(navigation.innerHTML)})
     ]).then(() => console.log("navigation preserved successfully!"))
     .catch(err => console.error(err));
-
-
 }
 
 function preserveBio() {
@@ -57,6 +55,8 @@ function preserve(element) {
         preserveProfile();
         if (element.classList.contains("nav-link")) {
             console.log("was nav link so preserving content under new navigation");
+            console.log("old: ", element["oldInnerText"]);
+            console.log("new: ", element.innerText);
             deleteCollectionData(element["oldInnerText"]);
             preserveContents(element.innerText);
         }

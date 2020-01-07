@@ -10,9 +10,6 @@ function navSelected() {
     }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
-    constructContents(this.innerText)
-    .then(() => setupContentListeners())
-    .catch(err => console.error(err));
 }
 
 
@@ -111,21 +108,36 @@ function adminButtonsSupply() {
 
 
 function navMouseDownHandler() {
-    this["latestEvent"] = Date.now();
-    setTimeout(() => {
-        if (this["latestEvent"]) {
-            console.log("click and hold");
-            if (localStorage.getItem("signedIn") == "true")
-                navLinkDeleteMode.bind(this)();
+    if (this["clickTime"]) {
+        if (Date.now() - this["clickTime"] < 150) {
+            console.log("double click");
+            delete this["clickTime"];
+            editMode.bind(this)();
         }
-    }, 1200);
+    }
+    else {
+        this["latestEvent"] = Date.now();
+        setTimeout(() => {
+            if (this["latestEvent"]) {
+                console.log("click and hold");
+                if (localStorage.getItem("signedIn") == "true")
+                    navLinkDeleteMode.bind(this)();
+            }
+        }, 1200);
+    }
 }
 
 function navMouseUpHandler() {
+    if (!this["latestEvent"]) return;
     if (Date.now() - this["latestEvent"] < 1200) {
-        console.log("click");
+        this["clickTime"] = Date.now();
+        setTimeout(() => {
+            if (this["clickTime"]) {
+                console.log("click");
+                navSelected.bind(this)();
+            }
+        }, 150);
         delete this["latestEvent"];
-        navSelected.bind(this)();
     }
 }
 

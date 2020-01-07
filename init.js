@@ -19,8 +19,10 @@ function setupNavLinkSelection() {
             return;
         }
     }
-    navs[0].classList.add("chosen-nav-link");
-    globalNamespace["selectedNavLink"] = navs[0];
+    if (navs.length > 0) {
+        navs[0].classList.add("chosen-nav-link");
+        globalNamespace["selectedNavLink"] = navs[0];
+    }
 }
 
 

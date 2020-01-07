@@ -1,7 +1,6 @@
 function generateNavigationLink() {
     navLink = document.createElement("div");
     navLink.classList.add("nav-link");
-    navLink.classList.add("profile-editable");
     navLink.appendChild(document.createTextNode("link"));
     document.getElementsByClassName("navigation-links")[0].appendChild(navLink);
 
@@ -13,7 +12,7 @@ function generateNavigationLink() {
         detailsContainer.removeChild(detailsContainer.firstChild);
     }
     detailsContainer.appendChild(fillContent);
-    
+
     setupNavListeners();
     return navLink;
 }
