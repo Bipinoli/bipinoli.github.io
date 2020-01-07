@@ -166,3 +166,8 @@ function crossBtnClickHandler() {
     })
     .catch(err => console.error(err));
 }
+
+
+function addNavLink() {
+    preserveContents(generateNavigationLink().innerText);
+}

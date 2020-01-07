@@ -1,4 +1,6 @@
 function replaceWithTextArea(element) {
+    element["oldInnerText"] = element.innerText;
+
     textarea = document.createElement("textarea");
     textarea.classList.add("edit-mode-signifier");
     textarea.addEventListener("dblclick", replaceWithOriginalElement);
@@ -68,8 +70,10 @@ function constructPage() {
     return new Promise(function (resolve, reject) {
         fetchDocData("profile", "navlinks")
             .then(data => {
-                console.log("cosntruct : " + data);
-                let promises = [constructProfile(), constructContents(data.data[0])];
+                console.log("construct : " + data);
+                let promises = [constructProfile()];
+                if (data.data.length > 0)
+                    promises.push(constructContents(data.data[0]));
                 Promise.all(promises)
                     .then(() => resolve())
                     .catch((error) => {

@@ -13,6 +13,7 @@ function generateNavigationLink() {
         detailsContainer.removeChild(detailsContainer.firstChild);
       }
     detailsContainer.appendChild(fillContent);
+    return navLink;
 }
 
 

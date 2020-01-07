@@ -32,9 +32,9 @@ function setupListeners() {
     setupAdminModeListeners();
     
     let addNavLinkBtn = document.getElementsByClassName("add-nav-link-btn")[0];
-    addNavLinkBtn.removeEventListener("click", generateNavigationLink);
+    addNavLinkBtn.removeEventListener("click", addNavLink);
     if (localStorage.getItem("signedIn") == "true")
-        addNavLinkBtn.addEventListener("click", generateNavigationLink);
+        addNavLinkBtn.addEventListener("click", addNavLink);
     console.log("listeners setup complete");
 }
 

@@ -55,9 +55,15 @@ function preserve(element) {
     if (ancestor.classList[0] == "profile-container") {
         console.log("preserving profile");
         preserveProfile();
+        if (element.classList.contains("nav-link")) {
+            console.log("was nav link so preserving content under new navigation");
+            deleteCollectionData(element["oldInnerText"]);
+            preserveContents(element.innerText);
+        }
     }
     else {
         console.log("preserving content");
         preserveContents();
     }
+    delete element["oldInnerText"];
 }
