@@ -124,3 +124,19 @@ function deleteCollection(collection) {
             });
     });
 }
+
+
+function deleteFieldInDoc(collection, doc, fieldValue) {
+    collection = collection.toLowerCase();
+    doc = doc.toLowerCase();
+    return new Promise(function (resolve, reject) {
+        globalNamespace["db"].collection(collection).doc(doc).update({
+            fieldNum: firebase.firestore.FieldValue.delete()
+        })
+        .then(() => resolve())
+        .catch(err => {
+            console.error(err);
+            reject();
+        });
+    });
+}

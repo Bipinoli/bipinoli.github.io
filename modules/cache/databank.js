@@ -76,3 +76,15 @@ function storeDocData(collection, doc, content) {
         });
     });
 }
+
+
+function deleteCollectionData(collection) {
+    return new Promise(function (resolve, reject) {
+        deleteCollection(collection)
+        .then(() => {
+            delete globalNamespace.cacheData[collection];
+            resolve();
+        })
+        .catch(err => reject(err));
+    });
+}

@@ -103,6 +103,7 @@ function generateSignInForm() {
 function generateCrossBtn() {
     let div = document.createElement("div");
     div.classList.add("cross-btn");
+    div.addEventListener("click", crossBtnClickHandler);
     return div;
 }
 

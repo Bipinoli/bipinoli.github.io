@@ -150,3 +150,16 @@ function navLinkNormalMode() {
     delete this["maskedElement"]["deleteMode"];
     removeMaskingPane(this["maskedElement"]);
 }
+
+
+function crossBtnClickHandler() {
+    let toDelete = this.parentElement.firstElementChild;
+    let attachedCrossBtn = toDelete["attachedCrossBtn"];
+    let maskingPane = toDelete["maskingPane"];
+    deleteCollectionData(toDelete.innerText)
+    .then(() => {
+        attachedCrossBtn.parentElement.removeChild(attachedCrossBtn);
+        maskingPane.parentElement.removeChild(maskingPane);
+    })
+    .catch(err => console.error(err));
+}

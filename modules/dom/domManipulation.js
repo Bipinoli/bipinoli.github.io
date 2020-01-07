@@ -26,6 +26,8 @@ function replaceWithOriginalElement() {
 
     removeMaskingPane(this);
     
+    preserve(this);
+    
     this.parentElement.removeChild(this);
 
     if (this["affectedElement"]) {
