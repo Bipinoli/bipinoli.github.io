@@ -107,9 +107,8 @@ function generateCrossBtn() {
 }
 
 
-function generateDarkWindowPane() {
+function generateMaskingPane() {
     let div = document.createElement("div");
-    div.classList.add("dark-overlay-window-pane");
+    div.classList.add("masking-overley-window-pane");
     return div;
 }
-

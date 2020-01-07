@@ -10,6 +10,8 @@ function replaceWithTextArea(element) {
     element.parentElement.insertBefore(textarea, element);
     textarea.style.height = textarea.scrollHeight + "px";
 
+    addMaskingPane(textarea);
+
     if (element.classList[0] == "content") {
         textarea["affectedElement"] = document.getElementsByClassName("content-reveal-btn")[0];
         disableDOMElement(textarea["affectedElement"]);
@@ -21,6 +23,9 @@ function replaceWithOriginalElement() {
     elem.style = this["styleToRessurect"];
     elem.innerHTML = beautifyHtml(this.value);
     elem.style.display = this["displayToResurrect"];
+
+    removeMaskingPane(this);
+    
     this.parentElement.removeChild(this);
 
     if (this["affectedElement"]) {
@@ -152,11 +157,18 @@ function detachCrossBtn(element) {
     grandParent.removeChild(toRemove);
 }
 
-function darkWindowPaneBackground(element) {
-    let pane = generateDarkWindowPane();
-    element.style.zIndex = "2";
-    pane.style.zIndex = "1";
+function addMaskingPane(element) {
+    let pane = generateMaskingPane();
     let body = document.getElementsByTagName("body")[0];
     body.appendChild(pane);
-    body["pane"] = pane;
+    pane["maskedElement"] = element;
+    element["maskingPane"] = pane;
+    element.style.zIndex = "2";
+    pane.style.zIndex = "1";
 }  
+
+function removeMaskingPane(element) {
+    element["maskingPane"].parentElement.removeChild(element["maskingPane"]);
+    delete element["maskingPane"];
+    element.style.zIndex = "0";
+}

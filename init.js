@@ -67,6 +67,7 @@ function setupContentListeners() {
             contentEditables[i].addEventListener("touchstart", tapHandler);
         }
     }
+    console.log('content listenrs setup complete');
 }
 
 function setupContentRevealListeners() {
@@ -101,4 +102,14 @@ function initTapSettings() {
         profileEditables[i]["latestTappedTime"] = null;
     for (let i=0; i<contentEditables.length; i++)
         contentEditables[i]["latestTappedTime"] = null;
+}
+
+function detachNavLinkEventListeners(navLink) {
+    navLink.removeEventListener("mousedown", navMouseDownHandler);
+    navLink.removeEventListener("mouseup", navMouseUpHandler);
+}
+
+function attachNavLinkEventListeners(navLink) {
+    navLink.addEventListener("mousedown", navMouseDownHandler);
+    navLink.addEventListener("mouseup", navMouseUpHandler);
 }

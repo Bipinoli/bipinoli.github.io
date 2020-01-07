@@ -130,7 +130,23 @@ function navMouseUpHandler() {
 
 
 function navLinkDeleteMode() {
+    if (this["deleteMode"]) return;
     console.log(this.innerText + " in delete mode.");
     attachCrossBtn(this);
-    darkWindowPaneBackground(this);
+    addMaskingPane(this);
+    this["maskingPane"].addEventListener("click", navLinkNormalMode);
+    detachNavLinkEventListeners(this);
+    this.style.boxShadow = "0px 0px 12px black";
+    this.style.cursor = "default";
+    this["deleteMode"] = true;
+}
+
+
+function navLinkNormalMode() {
+    detachCrossBtn(this["maskedElement"]);
+    attachNavLinkEventListeners(this["maskedElement"]);
+    this["maskedElement"].style.boxShadow = "0px 0px 3px rgba(112, 112, 112, 1)";
+    this["maskedElement"].style.cursor = "pointer";
+    delete this["maskedElement"]["deleteMode"];
+    removeMaskingPane(this["maskedElement"]);
 }
