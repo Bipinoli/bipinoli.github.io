@@ -2,6 +2,7 @@
     initDB();
     await constructPage();
     setupListeners();
+    setupContentRevealListeners();
     adminButtonsSupply();
     selectFirstNavLink();
     reorderComponents();
@@ -35,8 +36,6 @@ function setupListeners() {
 function setupNavListeners() {
     navs = document.getElementsByClassName("nav-link")
     for (let i=0; i<navs.length; i++) {
-        // navs[i].removeEventListener("click", navSelected);
-        // navs[i].addEventListener("click", navSelected);
         navs[i].removeEventListener("mousedown", navMouseDownHandler);
         navs[i].addEventListener("mousedown", navMouseDownHandler);
         navs[i].removeEventListener("mouseup", navMouseUpHandler);
@@ -58,7 +57,7 @@ function setupProfileListeners() {
 }
 
 function setupContentListeners() {
-    contentEditables = document.getElementsByClassName("content-editable");
+    let contentEditables = document.getElementsByClassName("content-editable");
     for (let i=0; i<contentEditables.length; i++) {
         contentEditables[i].removeEventListener("dblclick", editMode);
         contentEditables[i].removeEventListener("touchstart", tapHandler);
@@ -67,7 +66,7 @@ function setupContentListeners() {
             contentEditables[i].addEventListener("touchstart", tapHandler);
         }
     }
-    console.log('content listenrs setup complete');
+    console.log('content listeners setup complete');
 }
 
 function setupContentRevealListeners() {

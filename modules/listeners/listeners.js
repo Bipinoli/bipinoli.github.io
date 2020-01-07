@@ -7,12 +7,12 @@ function navSelected() {
     console.log("navSelected");
     if (globalNamespace['selectedNavLink']) {
         globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
-        if (localStorage.getItem("signedIn") == "true")
-            preserveContents(globalNamespace['selectedNavLink'].innerText);
     }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
-    constructContents(this.innerText);
+    constructContents(this.innerText)
+    .then(() => setupContentListeners())
+    .catch(err => console.error(err));
 }
 
 
