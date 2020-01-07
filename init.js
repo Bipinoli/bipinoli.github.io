@@ -7,6 +7,7 @@
     setupNavLinkSelection();
     reorderComponents();
     initTapSettings();
+    navLinkGotEdited();
     console.log("ok initalized properly. Ready to go!");
 })();
 

@@ -1,25 +1,27 @@
 function editMode() {
+    clearUneditedNavLink(this);
     replaceWithTextArea(this);
 }
 
 
 function navSelected() {
-    clearUneditedNavLink();
-
     console.log("navSelected");
     if (globalNamespace['selectedNavLink']) {
         globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
     }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
-
-    function clearUneditedNavLink() {
-        if (globalNamespace.uneditedNav) {
-            if (globalNamespace.uneditedNav == this) return;
-            globalNamespace.uneditedNav.parentElement.removeChild(globalNamespace.uneditedNav);
-            enableAddNewLinkBtn();
-        }
-    }
+    if (globalNamespace.uneditedNav && globalNamespace.uneditedNav == this) {
+        setupContentListeners();
+        initTapSettings();
+        return;
+    } 
+    constructContents(this.innerText)
+    .then(() => {
+        setupContentListeners();
+        initTapSettings();
+    })
+    .catch(err => console.error(err));
 }
 
 
@@ -122,6 +124,8 @@ function navMouseDownHandler() {
         if (Date.now() - this["clickTime"] < 150) {
             console.log("double click");
             delete this["clickTime"];
+            delete this["latestEvent"];
+            clearUneditedNavLink(this);
             editMode.bind(this)();
         }
     }
@@ -130,6 +134,9 @@ function navMouseDownHandler() {
         setTimeout(() => {
             if (this["latestEvent"]) {
                 console.log("click and hold");
+                delete this["clickTime"];
+                delete this["latestEvent"];
+                clearUneditedNavLink(this);
                 if (localStorage.getItem("signedIn") == "true")
                     navLinkDeleteMode.bind(this)();
             }
@@ -141,13 +148,16 @@ function navMouseUpHandler() {
     if (!this["latestEvent"]) return;
     if (Date.now() - this["latestEvent"] < 1200) {
         this["clickTime"] = Date.now();
+        delete this["latestEvent"];
         setTimeout(() => {
             if (this["clickTime"]) {
                 console.log("click");
+                delete this["clickTime"];
+                delete this["latestEvent"];
+                clearUneditedNavLink(this);
                 navSelected.bind(this)();
             }
         }, 150);
-        delete this["latestEvent"];
     }
 }
 
@@ -181,6 +191,7 @@ function crossBtnClickHandler() {
     let maskingPane = toDelete["maskingPane"];
     deleteCollectionData(toDelete.innerText)
     .then(() => {
+        console.log("cross click handled properly");
         attachedCrossBtn.parentElement.removeChild(attachedCrossBtn);
         maskingPane.parentElement.removeChild(maskingPane);
         toDelete.parentElement.removeChild(toDelete);
@@ -207,11 +218,7 @@ function addNavLink() {
     detailsContainer.appendChild(fillContent);
     
     setupNavListeners();
-    disableAddNewLinkBtn(navLink);
+    navLinkHasntBeenEdited(navLink);
     
-    // navSelected.bind(navLink)();
-
-    function isNewNavLinkAllowed() {
-        return globalNamespace.uneditedNav == null;
-    }
+    navSelected.bind(navLink)();
 }

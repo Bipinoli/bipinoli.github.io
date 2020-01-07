@@ -14,3 +14,12 @@ function removeGrammarlyHtml(text) {
     text = text.replace(/<grammarly-extension(.|\n)*<\/grammarly-extension>/g, "");
     return text;
 }
+
+
+function ancestorClassName(element) {
+    masterContainer = document.getElementsByClassName("master-container")[0];
+    let ancestor = element;
+    while (ancestor.parentElement != masterContainer) 
+        ancestor = ancestor.parentElement;
+    return ancestor;
+}

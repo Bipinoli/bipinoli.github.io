@@ -69,6 +69,7 @@ function fetchDoc(collection, doc) {
 
 function store(collection, content) {
     collection = collection.toLowerCase();
+    console.log("store(); collection: ", collection, " content: ", content);
     return new Promise(function (resolve, reject) {
         globalNamespace["db"].collection(collection).doc("html").set(content)
             .then(() => {

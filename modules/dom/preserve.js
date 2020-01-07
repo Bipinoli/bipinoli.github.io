@@ -1,7 +1,6 @@
 function preserveContents(page = globalNamespace.selectedNavLink.innerText) {
     console.log("preserving contents");
-    let contents = document.getElementsByClassName("content");
-    html = document.getElementsByClassName("details-container")[0].innerHTML;
+    let html = document.getElementsByClassName("details-container")[0].innerHTML;
     storeData(page, {html: removeGrammarlyHtml(html)})
     .then(() => console.log("contents preserved successfully!"))
     .catch(err => console.error(err));
@@ -46,10 +45,8 @@ function preserveBio() {
 
 
 function preserve(element) {
-    let masterContainer = document.getElementsByClassName("master-container")[0];
-    let ancestor = element;
-    while (ancestor.parentElement != masterContainer) 
-        ancestor = ancestor.parentElement;
+    console.log("preserving: ", element);
+    let ancestor = ancestorClassName(element);
     if (ancestor.classList[0] == "profile-container") {
         console.log("preserving profile");
         preserveProfile();
@@ -62,7 +59,6 @@ function preserve(element) {
         }
     }
     else {
-        console.log("preserving content");
         preserveContents();
     }
     delete element["oldInnerText"];

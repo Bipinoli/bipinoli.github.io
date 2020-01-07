@@ -36,6 +36,7 @@ function replaceWithOriginalElement() {
     this.parentElement.removeChild(this);
     preserve(elem);
 
+    navLinkGotEdited();
     setupListeners();
 }
 
@@ -74,6 +75,7 @@ function constructPage() {
                 let promises = [constructProfile()];
                 if (data.data.length > 0)
                     promises.push(constructContents(data.data[0]));
+                console.log("construct page promises: ", promises);
                 Promise.all(promises)
                     .then(() => resolve())
                     .catch((error) => {

@@ -51,6 +51,7 @@ async function fetchDocData(collection, doc) {
 
 
 function storeData(collection, content) {
+    console.log("storeData; collection: " + collection + ", content: ", content);
     return new Promise(function (resolve, reject) {
         store(collection, content)
         .then(() => {
@@ -70,6 +71,7 @@ function storeDocData(collection, doc, content) {
             if (!(collection in globalNamespace.cacheData))
                 globalNamespace.cacheData[collection] = {};
             globalNamespace.cacheData[collection][doc] = data;
+            resolve();
         })
         .catch(err => {
             reject(err);
@@ -96,8 +98,8 @@ function deleteCollectionData(collection) {
                     }
                 }
             }
-            console.log(updatedNavLinks);
-            console.log(collection);
+            console.log("updaed nav headers: ", updatedNavLinks);
+            console.log(collection + " is going to be deleted");
             storeDocData("profile", "navlinks", {"html": updatedNavLinks})
             .then(() => {
                 resolve();
