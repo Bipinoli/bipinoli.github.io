@@ -1,19 +1,7 @@
 function generateNavigationLink() {
-    navLink = document.createElement("div");
+    let navLink = document.createElement("div");
     navLink.classList.add("nav-link");
     navLink.appendChild(document.createTextNode("link"));
-    document.getElementsByClassName("navigation-links")[0].appendChild(navLink);
-
-    navSelected.bind(navLink)();
-    
-    let fillContent = generatePlaceHolderContent();
-    let detailsContainer = document.getElementsByClassName("details-container")[0];
-    while (detailsContainer.firstChild) {
-        detailsContainer.removeChild(detailsContainer.firstChild);
-    }
-    detailsContainer.appendChild(fillContent);
-
-    setupNavListeners();
     return navLink;
 }
 

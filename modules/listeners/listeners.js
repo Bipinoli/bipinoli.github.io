@@ -4,12 +4,22 @@ function editMode() {
 
 
 function navSelected() {
+    clearUneditedNavLink();
+
     console.log("navSelected");
     if (globalNamespace['selectedNavLink']) {
         globalNamespace['selectedNavLink'].classList.remove("chosen-nav-link");
     }
     this.classList.add("chosen-nav-link");
     globalNamespace['selectedNavLink'] = this;
+
+    function clearUneditedNavLink() {
+        if (globalNamespace.uneditedNav) {
+            if (globalNamespace.uneditedNav == this) return;
+            globalNamespace.uneditedNav.parentElement.removeChild(globalNamespace.uneditedNav);
+            enableAddNewLinkBtn();
+        }
+    }
 }
 
 
@@ -181,5 +191,27 @@ function crossBtnClickHandler() {
 
 
 function addNavLink() {
-    preserveContents(generateNavigationLink().innerText);
+    if (!isNewNavLinkAllowed()) {
+        console.log("unedited nav link already exists!");
+        return;
+    }
+
+    let navLink = generateNavigationLink();
+    document.getElementsByClassName("navigation-links")[0].appendChild(navLink);
+    
+    let fillContent = generatePlaceHolderContent();
+    let detailsContainer = document.getElementsByClassName("details-container")[0];
+    while (detailsContainer.firstChild) {
+        detailsContainer.removeChild(detailsContainer.firstChild);
+    }
+    detailsContainer.appendChild(fillContent);
+    
+    setupNavListeners();
+    disableAddNewLinkBtn(navLink);
+    
+    // navSelected.bind(navLink)();
+
+    function isNewNavLinkAllowed() {
+        return globalNamespace.uneditedNav == null;
+    }
 }
