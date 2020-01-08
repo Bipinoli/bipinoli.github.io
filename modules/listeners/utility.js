@@ -38,3 +38,25 @@ function clearUneditedNavLink(element) {
         enableAddNewLinkBtn();
     }
 }
+
+
+function isPageReadyToBeShown() {
+    // lets say that the content is ready when profile section is ready
+    let sections = ["aboutsection", "namesection", "navigationsection", "navlinks", "picsection"];
+    let sectionsFound = 0;
+    if ("profile" in globalNamespace.cacheData) {
+        let profile = globalNamespace.cacheData.profile;
+        for (let i=0; i<profile.length; i++) {
+            if (profile[i].id && sections.includes(profile[i].id) && profile[i].html) 
+                sectionsFound += 1;
+        }
+        if (sectionsFound == sections.length)
+            return true;
+    }
+    return false;
+}
+
+
+function showActualPage() {
+    document.getElementsByClassName("fallback-container")[0].style.display = "none";
+}

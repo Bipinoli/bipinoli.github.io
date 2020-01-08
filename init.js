@@ -8,6 +8,8 @@
     reorderComponents();
     initTapSettings();
     navLinkGotEdited();
+    if (isPageReadyToBeShown())
+        showActualPage();
     console.log("ok initalized properly. Ready to go!");
 })();
 
