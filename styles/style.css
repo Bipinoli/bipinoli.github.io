@@ -191,11 +191,15 @@ a {
     font-weight: bolder;
     font-size: 2em;
     color: black;
+    min-height: 50px;
+    min-width: 50px;
 }
 .quick-links {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    min-height: 20px;
+    min-width: 100px;
 }
 .quick-link {
     border-left: 2px solid #565656;
@@ -207,12 +211,15 @@ a {
 .pic-section {
     margin-top: 10px;
     margin-bottom: 20px;
+    min-height: 150px;
+    min-width: 150px;
 }
 .about-section {
     margin-bottom: 20px;
     text-align: center;
     padding: 0 20px;
-
+    min-height: 200px;
+    min-width: 200px;
 }
 .navigate-section {
     display: flex;
