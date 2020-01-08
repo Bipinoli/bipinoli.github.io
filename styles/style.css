@@ -341,11 +341,12 @@ a {
 .btn {
     padding: 15px 6px;
     color: white;
-    background-color: #3b444b;
+    background-color: #0A5D77;
     margin-top: 5px;
 }
 .cancel-btn {
-    background-color: #f17362;
+    background-color: #8DE3EE;
+    color: black;
 }
 .cross-btn {
     width: 20px;
