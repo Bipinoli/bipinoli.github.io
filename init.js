@@ -16,12 +16,6 @@
 
 function setupNavLinkSelection() {
     let navs = document.getElementsByClassName("navigation-links")[0].children;
-    for (let i=0; i<navs.length; i++) {
-        if (navs[i].classList.contains("chosen-nav-link")) {
-            globalNamespace["selectedNavLink"] = navs[i];
-            return;
-        }
-    }
     if (navs.length > 0) {
         navs[0].classList.add("chosen-nav-link");
         globalNamespace["selectedNavLink"] = navs[0];

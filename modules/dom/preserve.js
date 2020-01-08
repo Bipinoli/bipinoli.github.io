@@ -24,8 +24,10 @@ function preserveNavigation() {
 
     Promise.all([
         storeDocData("profile", "navlinks", {html: navs}),
-        storeDocData("profile", "navigationSection", {html: removeGrammarlyHtml(navigation.innerHTML)})
-    ]).then(() => console.log("navigation preserved successfully!"))
+        storeDocData("profile", "navigationSection", {html: removeChosenNavLinkClassNameFromHTML(removeGrammarlyHtml(navigation.innerHTML))})
+    ]).then(() => {
+        console.log("navigation preserved successfully!");
+    })
     .catch(err => console.error(err));
 }
 

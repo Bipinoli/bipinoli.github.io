@@ -15,6 +15,12 @@ function removeGrammarlyHtml(text) {
     return text;
 }
 
+function removeChosenNavLinkClassNameFromHTML(text) {
+    text = text.replace(/class="nav-link chosen-nav-link"/g, 'class="nav-link"');
+    return text;
+}
+
+
 
 function ancestorClassName(element) {
     masterContainer = document.getElementsByClassName("master-container")[0];
