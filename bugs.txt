@@ -1,3 +1,0 @@
-1. show fallback content if data couldn't be loaded due to network failure
-2. bug in constructing contents
-3. bug in preserving contents
