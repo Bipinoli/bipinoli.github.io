@@ -1,4 +1,7 @@
-# Merkle tree in 2 minutes (simplified)
+---
+layout: post
+title: Essense of Merkle tree
+---
 To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.
 
 ![image](/assets/images/merkle_tree/merkle.png){:height="500px"}

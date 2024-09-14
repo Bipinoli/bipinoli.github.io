@@ -1,4 +1,7 @@
-### About
+---
+layout: post
+title: Git bisect
+---
 [Git bisect](https://git-scm.com/docs/git-bisect) is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen.
 
 ### How to use?

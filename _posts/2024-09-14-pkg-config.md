@@ -1,16 +1,19 @@
-## About pkg-config
-`pkg-config` is a tool that originated in Linux to view the meta information about installed libraries. It can be very useful to know the following about the install libraries:
-- header files include path
+---
+layout: post
+title: pkg-config
+---
+`pkg-config` is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: 
+- include path of header files
 - link path of library files
 - version of library
 - etc.
 
-When a library is built or installed, if it produces a `.pc` file than it works with `pkg-config`. `.pc` file has all the meta-information needed. After putting these `.pc` files in the folder where `pkg-config` looks for them it should work just fine.
+When a library is built or installed, usually a `.pc` meta file is produced. `.pc` file contains all meta information such as link path, etc. For `pkg-config` to work with the library, the `.pc` file must be placed in the correct search location.
 
 ## Example use
-Say you want to use `libpng` to work with png images. You install `libpng` via say homebrew and now want to use it in your project as a library. How would you do it?
+Say I want to use `libpng` to work with png images. I install `libpng` via say homebrew and now want to use it in my project as a library. How can I do that?
 
-1. First let's see what version of `libpng` we have \
+1. First let's see what version of `libpng` do I have \
    `$ pkg-config --modversion libpng` \
    `1.6.43`
    

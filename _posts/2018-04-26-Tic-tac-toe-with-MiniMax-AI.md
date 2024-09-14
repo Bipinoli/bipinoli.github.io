@@ -1,7 +1,9 @@
-# Tic tac toe with Minimax AI
+---
+layout: post
+title: Tic tac toe with minimax AI
+---
 
 ![image](/assets/images/tic_tac_toe/tic_tac_toe.png){:height="500px"}
-
 
 Yesterday i was bored as hell. With nothing particular to do, this semester break seemed pretty dull. I was lying in the bed bored and lazy. And out of nowhere i came up with the idea of making game. I decided on Tic Tac Toe and started laying my game plan. Within few hours i would have a playable game in front of me.
 
