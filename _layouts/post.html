@@ -3,6 +3,8 @@ layout: default
 ---
 
 <h1>{{ page.title }}</h1>
-<p>{{ page.date | date_to_string }}</p>
+<p class="page-date">{{ page.date | date_to_string }}</p>
 
-{{ content }}
+<div class="page-content">
+    {{ content }}
+</div>

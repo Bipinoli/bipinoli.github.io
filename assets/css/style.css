@@ -20,3 +20,9 @@ body {
 .current-post {
   font-weight: bold;
 }
+.page-date {
+  font-weight: 300;
+}
+.page-content {
+  padding-top: 1rem;
+}
