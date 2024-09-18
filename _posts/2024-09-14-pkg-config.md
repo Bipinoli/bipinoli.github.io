@@ -8,7 +8,7 @@ title: pkg-config
 - version of library
 - etc.
 
-When a library is built or installed, usually a `.pc` meta file is produced. `.pc` file contains all meta information such as link path, etc. For `pkg-config` to work with the library, the `.pc` file must be placed in the correct search location.
+When a library is built or installed, usually a `.pc` meta file is produced. `.pc` file contains all meta information such as link path, etc. For `pkg-config` to work with the library, the `.pc` file must be placed in the correct search location (`PKG_CONFIG_PATH` environment variable).
 
 ## Example use
 Say I want to use `libpng` to work with png images. I install `libpng` via say homebrew and now want to use it in my project as a library. How can I do that?
