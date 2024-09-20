@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Dockerized FPGA synthesis pipeline
+toc: true
 ---
 
 ![image](/assets/images/verilog2Fpga/fpga.png){:height="200px"}
@@ -51,8 +52,3 @@ After installing docker in the VM. I simply did:
 
 and that was it.
 
-
-
-
-##### References
-- https://github.com/reactive-systems/KitchenTimer/blob/master/clash/makefile
