@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-09-20T12:08:05-05:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Dockerized FPGA synthesis pipeline</title><link href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html" rel="alternate" type="text/html" title="Dockerized FPGA synthesis pipeline" /><published>2024-09-19T00:00:00-05:00</published><updated>2024-09-19T00:00:00-05:00</updated><id>/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline</id><content type="html" xml:base="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html"><![CDATA[<p><img src="/assets/images/verilog2Fpga/fpga.png" alt="image" height="200px" /></p>
+
+<p>I have been playing with Haskell and lately the <a href="https://clash-lang.org/Clash">Clash hardware compiler</a>. Clash transpiles the functional hardware description written in Haskell to the standard HDLs such as Verilog. To be able to run such verilog code in an FPGA, a bitstream needs to be generated to program the FPGA. This post talks about a dockerized pipeline called <a href="https://github.com/Bipinoli/verilog2fpga">Verilog2Fpga</a> to do that.</p>
+
+<h3 id="synthesis-pipeline">Synthesis pipeline</h3>
+<p><a href="https://github.com/Bipinoli/verilog2fpga">Verilog2Fpga</a> uses the existing open-source synthesis tools. It currently programs the iCE40HX1K-BLINK-EVN FPGA as that’s the one I happen to have.</p>
+
+<ol>
+  <li><a href="https://github.com/cliffordwolf/yosys">yosys</a> - to synthesize circult netlist from the HDL</li>
+  <li><a href="https://github.com/YosysHQ/nextpnr">nextpnr</a> - for placing and routing of circuit components for the FPGA</li>
+  <li><a href="https://github.com/cliffordwolf/icestorm/">icestorm</a> - to create a bitstream file with <a href="https://github.com/cliffordwolf/icestorm/">icepack</a> for Lattice iCE40 FPGA</li>
+  <li><a href="https://github.com/reactive-systems/icedude">icedude</a> - to program the iCE40 evaluation board with the produced bitstream</li>
+</ol>
+
+<h3 id="how-to-use">How to use?</h3>
+
+<h4 id="linux">Linux</h4>
+<ol>
+  <li>Connect the FPGA via usb</li>
+  <li>Setup docker container with <code class="language-plaintext highlighter-rouge">./setup_container.sh</code></li>
+  <li>Run <code class="language-plaintext highlighter-rouge">./synthesize.sh</code> with a path to your verilog files (.v, .pcf) as an argument. <br />
+ Eg: <code class="language-plaintext highlighter-rouge">./synthesize.sh example_verilog</code></li>
+</ol>
+
+<h4 id="macos--windows">macOS / Windows</h4>
+<p>On macOS and Windows, the docker runs within a separate VM, so unlike linux, it can’t natively access the usb device. There are many ways this could be handled. Such as:</p>
+<ul>
+  <li>Configuring the VM where docker runs</li>
+  <li>Using tools like <a href="https://linux.die.net/man/1/socat">socat</a> to forward usb data via TCP socket</li>
+</ul>
+
+<h5 id="how-i-configured-for-macos">How I configured for macOS</h5>
+<p>I use Mac so I faced this issue myself. I chose to install a separate linux VM (debian) with virtualbox instead of configuring with the above mentioned methods, mainly for ease. This is how I configured VM</p>
+
+<h6 id="1-identify-the-usb-device">1. Identify the usb device</h6>
+<ul>
+  <li>I ran <code class="language-plaintext highlighter-rouge">ioreg -p IOUSB</code> in macOS which gave me the list of connected usb devices</li>
+  <li>To identify the acutal name of the device, I disconnected the FPGA and ran the command again. The device which disappeared from the list is sure to be the the FPGA device</li>
+</ul>
+
+<p><img src="/assets/images/verilog2Fpga/list_of_usb.png" alt="image" height="200px" /></p>
+
+<h6 id="2-configure-the-vm-to-access-the-identified-usb-device">2. Configure the VM to access the identified USB device</h6>
+<p>With the device name known, I put it in the usb device filters of VM setting. Alternatively, I could have passed through all the usb devices but this gave me more confidence.</p>
+
+<p><img src="/assets/images/verilog2Fpga/configure_vm.png" alt="image" height="300px" /></p>
+
+<p>When the VM was running, I quickly ran <code class="language-plaintext highlighter-rouge">lsusb</code> to verify if it can access the usb device.</p>
+
+<h5 id="running">Running</h5>
+<p>After installing docker in the VM. I simply did:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">./setup_container.sh</code></li>
+  <li><code class="language-plaintext highlighter-rouge">./synthesize.sh example_verilog</code></li>
+</ol>
+
+<p>and that was it.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">pkg-config</title><link href="/2024/09/14/pkg-config.html" rel="alternate" type="text/html" title="pkg-config" /><published>2024-09-14T00:00:00-05:00</published><updated>2024-09-14T00:00:00-05:00</updated><id>/2024/09/14/pkg-config</id><content type="html" xml:base="/2024/09/14/pkg-config.html"><![CDATA[<p><code class="language-plaintext highlighter-rouge">pkg-config</code> is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like:</p>
+<ul>
+  <li>include path of header files</li>
+  <li>link path of library files</li>
+  <li>version of library</li>
+  <li>etc.</li>
+</ul>
+
+<p>When a library is built or installed, usually a <code class="language-plaintext highlighter-rouge">.pc</code> meta file is produced. <code class="language-plaintext highlighter-rouge">.pc</code> file contains all meta information such as link path, etc. For <code class="language-plaintext highlighter-rouge">pkg-config</code> to work with the library, the <code class="language-plaintext highlighter-rouge">.pc</code> file must be placed in the correct search location (<code class="language-plaintext highlighter-rouge">PKG_CONFIG_PATH</code> environment variable).</p>
+
+<h2 id="example-use">Example use</h2>
+<p>Say I want to use <code class="language-plaintext highlighter-rouge">libpng</code> to work with png images. I install <code class="language-plaintext highlighter-rouge">libpng</code> via say homebrew and now want to use it in my project as a library. How can I do that?</p>
+
+<ol>
+  <li>
+    <p>First let’s see what version of <code class="language-plaintext highlighter-rouge">libpng</code> do I have <br />
+<code class="language-plaintext highlighter-rouge">$ pkg-config --modversion libpng</code> <br />
+<code class="language-plaintext highlighter-rouge">1.6.43</code></p>
+  </li>
+  <li>
+    <p>Ok good. Where can I find the header files for <code class="language-plaintext highlighter-rouge">libpng</code> <br />
+<code class="language-plaintext highlighter-rouge">$ pkg-config --cflags libpng</code> <br />
+<code class="language-plaintext highlighter-rouge">-I/opt/local/include/libpng16 -I/opt/local/include</code></p>
+  </li>
+  <li>
+    <p>Nice. What about the path of libraries to link? <br />
+<code class="language-plaintext highlighter-rouge">$ pkg-config --libs libpng</code> <br />
+<code class="language-plaintext highlighter-rouge">-L/opt/local/lib -lpng16</code></p>
+  </li>
+</ol>
+
+<p>With these information I can easily use the library with my project like: <br />
+<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr -I/opt/local/include/libpng16 -I/opt/local/include -L/opt/local/lib -lpng16</code></p>
+
+<p>or even better: <br />
+<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr $(pkg-config --libs -cflags libpng)</code></p>]]></content><author><name></name></author><summary type="html"><![CDATA[pkg-config is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: include path of header files link path of library files version of library etc.]]></summary></entry><entry><title type="html">Git bisect</title><link href="/2024/08/01/Git-bisect.html" rel="alternate" type="text/html" title="Git bisect" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/Git-bisect</id><content type="html" xml:base="/2024/08/01/Git-bisect.html"><![CDATA[<p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
+
+<h3 id="how-to-use">How to use?</h3>
+<p>Basically we do manual binary search.</p>
+<ul>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
+</ul>
+
+<p>Before marking current commit as good or bad we check the “change of interest”.
+This could be manual inspection, test run, performance logs, anything.</p>
+
+<h2 id="when-to-use">When to use?</h2>
+<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
+<ul>
+  <li>Where was the bug introduced?</li>
+  <li>What exactly improved this performance?</li>
+  <li>What change cause the test to start failing?</li>
+  <li>etc. etc.</li>
+</ul>
+
+<h3 id="related">Related</h3>
+<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>]]></content><author><name></name></author><summary type="html"><![CDATA[Git bisect is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so git bisect bad command is used to indicate observation of it.]]></summary></entry><entry><title type="html">Essense of Merkle tree</title><link href="/2020/01/21/Merkle-tree-in-2-minutes.html" rel="alternate" type="text/html" title="Essense of Merkle tree" /><published>2020-01-21T00:00:00-06:00</published><updated>2020-01-21T00:00:00-06:00</updated><id>/2020/01/21/Merkle-tree-in-2-minutes</id><content type="html" xml:base="/2020/01/21/Merkle-tree-in-2-minutes.html"><![CDATA[<p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
+
+<p><img src="/assets/images/merkle_tree/merkle.png" alt="image" height="500px" /></p>
+
+<p>While hashing the hashes say <strong>H1</strong>, <strong>H2</strong>, <strong>H3</strong> we append those hashes to get a single string <strong>H1 + H2 + H3</strong> and hash that individual string to get a new hash <strong>H123</strong>.</p>
+
+<p>Merkle Tree is mainly used to efficiently verify the integrity of the data.</p>
+
+<p>Let’s take a closer look at the diagram above: hash <strong>H12</strong> has basically the summary of <strong>data1</strong> and <strong>data2</strong>. Even if a single bit in <strong>data1</strong> or <strong>data2</strong> changes it will be reflected in <strong>H12</strong>. Thus, if we are comparing two Merkle trees and found that <strong>H12</strong> is the same in both. Then it guarantees that <strong>data1</strong> and <strong>data2</strong> haven’t been changed.</p>
+
+<p>This way root of the tree holds the summary of all its children and we only need to compare the root node to detect the differences.</p>
+
+<p>In order to identify the data nodes that have been changed. We can compare the root hashes. If that is different, we can compare the hashes of its children and so on.</p>
+
+<p>Say, we were transferring the data from one server node to another. And in the meantime, <strong>data3</strong> got updated in the source.</p>
+
+<p><img src="/assets/images/merkle_tree/merkle_update.png" alt="image" height="500px" /></p>
+
+<p>Now on comparing the Merkle Tree of received data to its source. We can see that:</p>
+
+<p><strong>H1234</strong> is different so there are changes. <strong>H12</strong> is the same so its sub-tree is clean. Following the hashes that are different, we go from <strong>H1234</strong> to <strong>H34</strong> to <strong>H3</strong> to <strong>data3</strong> basically identifying the changed data.</p>
+
+<p>Merkel Tree has been useful in many use cases. DynamoDB uses Merkel Tree for consistent hashing. Git uses Merkel Tree to keep git history. It is also used in internet file sharing. Knowing the root hash from a trusted source we can combine only those data pieces that produce the same root hash allowing us to filter the tempered and infected data pieces.</p>
+
+<p><em>Originally <a href="https://medium.com/@bipinoli90/merkle-tree-in-2-mins-simplified-1577d15b4850">published on Medium</a></em></p>]]></content><author><name></name></author><summary type="html"><![CDATA[To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.]]></summary></entry><entry><title type="html">Tic tac toe with minimax</title><link href="/2018/04/26/Tic-tac-toe-with-MiniMax-AI.html" rel="alternate" type="text/html" title="Tic tac toe with minimax" /><published>2018-04-26T00:00:00-05:00</published><updated>2018-04-26T00:00:00-05:00</updated><id>/2018/04/26/Tic-tac-toe-with-MiniMax-AI</id><content type="html" xml:base="/2018/04/26/Tic-tac-toe-with-MiniMax-AI.html"><![CDATA[<p><img src="/assets/images/tic_tac_toe/tic_tac_toe.png" alt="image" height="500px" /></p>
+
+<p>With nothing particular to do, this semester break seemed pretty dull. I was lying in the bed bored and lazy. Suddenly, I had an urge to make a simple game. I decided on Tic Tac Toe as it seemed easy and started laying out my plan. Within few hours, I had some rudimentary game in front of me.</p>
+
+<p>Github link: <a href="https://github.com/Bipinoli/Tic-Tac-Toe">here</a></p>
+
+<p><em>Note: Later I made an android game from it in Godot and published the game on Google play store. The image above is the banner image from there. The game is no longer available in the store</em></p>
+
+<p><em>Originally <a href="https://medium.com/@bipinoli90/tic-tac-toe-with-minimax-ai-102d19a8eb7b">published on Medium</a></em></p>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry></feed>

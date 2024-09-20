@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Essense of Merkle tree</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+  </head>
+  <body>
+    <div class="top-banner">
+      <p>Learning trail of <a href="https://www.linkedin.com/in/olibipin/">Bipin Oli</a></p>
+    </div>
+
+    <div class="main-container">
+      <div class="content">
+        <h1>Essense of Merkle tree</h1>
+<p class="page-date">21 Jan 2020</p>
+
+<div class="page-content">
+  
+  <div class="content-with-toc">
+    <p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
+
+<p><img src="/assets/images/merkle_tree/merkle.png" alt="image" height="500px" /></p>
+
+<p>While hashing the hashes say <strong>H1</strong>, <strong>H2</strong>, <strong>H3</strong> we append those hashes to get a single string <strong>H1 + H2 + H3</strong> and hash that individual string to get a new hash <strong>H123</strong>.</p>
+
+<p>Merkle Tree is mainly used to efficiently verify the integrity of the data.</p>
+
+<p>Let’s take a closer look at the diagram above: hash <strong>H12</strong> has basically the summary of <strong>data1</strong> and <strong>data2</strong>. Even if a single bit in <strong>data1</strong> or <strong>data2</strong> changes it will be reflected in <strong>H12</strong>. Thus, if we are comparing two Merkle trees and found that <strong>H12</strong> is the same in both. Then it guarantees that <strong>data1</strong> and <strong>data2</strong> haven’t been changed.</p>
+
+<p>This way root of the tree holds the summary of all its children and we only need to compare the root node to detect the differences.</p>
+
+<p>In order to identify the data nodes that have been changed. We can compare the root hashes. If that is different, we can compare the hashes of its children and so on.</p>
+
+<p>Say, we were transferring the data from one server node to another. And in the meantime, <strong>data3</strong> got updated in the source.</p>
+
+<p><img src="/assets/images/merkle_tree/merkle_update.png" alt="image" height="500px" /></p>
+
+<p>Now on comparing the Merkle Tree of received data to its source. We can see that:</p>
+
+<p><strong>H1234</strong> is different so there are changes. <strong>H12</strong> is the same so its sub-tree is clean. Following the hashes that are different, we go from <strong>H1234</strong> to <strong>H34</strong> to <strong>H3</strong> to <strong>data3</strong> basically identifying the changed data.</p>
+
+<p>Merkel Tree has been useful in many use cases. DynamoDB uses Merkel Tree for consistent hashing. Git uses Merkel Tree to keep git history. It is also used in internet file sharing. Knowing the root hash from a trusted source we can combine only those data pieces that produce the same root hash allowing us to filter the tempered and infected data pieces.</p>
+
+<p><em>Originally <a href="https://medium.com/@bipinoli90/merkle-tree-in-2-mins-simplified-1577d15b4850">published on Medium</a></em></p>
+
+  </div>
+</div>
+
+
+      </div>
+      <div class="sidebar">
+        <div class="sidebar">
+    <h3>All posts</h3>
+    
+    
+      <p>2024</p>
+        <ul>
+          
+            <li><a href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html" >Dockerized FPGA synthesis pipeline</a></li>
+          
+            <li><a href="/2024/09/14/pkg-config.html" >pkg-config</a></li>
+          
+            <li><a href="/2024/08/01/Git-bisect.html" >Git bisect</a></li>
+          
+        </ul>
+    
+      <p>2020</p>
+        <ul>
+          
+            <li><a href="/2020/01/21/Merkle-tree-in-2-minutes.html"  class="current-post" >Essense of Merkle tree</a></li>
+          
+        </ul>
+    
+      <p>2018</p>
+        <ul>
+          
+            <li><a href="/2018/04/26/Tic-tac-toe-with-MiniMax-AI.html" >Tic tac toe with minimax</a></li>
+          
+        </ul>
+    
+</div>
+
+      </div>
+    </div>
+  </body>
+</html>

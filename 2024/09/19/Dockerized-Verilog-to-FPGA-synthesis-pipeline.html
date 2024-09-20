@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dockerized FPGA synthesis pipeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+  </head>
+  <body>
+    <div class="top-banner">
+      <p>Learning trail of <a href="https://www.linkedin.com/in/olibipin/">Bipin Oli</a></p>
+    </div>
+
+    <div class="main-container">
+      <div class="content">
+        <h1>Dockerized FPGA synthesis pipeline</h1>
+<p class="page-date">19 Sep 2024</p>
+
+<div class="page-content">
+  <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h3"><a href="#synthesis-pipeline">Synthesis pipeline</a></li>
+<li class="toc-entry toc-h3"><a href="#how-to-use">How to use?</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#linux">Linux</a></li>
+<li class="toc-entry toc-h4"><a href="#macos--windows">macOS / Windows</a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#how-i-configured-for-macos">How I configured for macOS</a>
+<ul>
+<li class="toc-entry toc-h6"><a href="#1-identify-the-usb-device">1. Identify the usb device</a></li>
+<li class="toc-entry toc-h6"><a href="#2-configure-the-vm-to-access-the-identified-usb-device">2. Configure the VM to access the identified USB device</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h5"><a href="#running">Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  <div class="content-with-toc">
+    <p><img src="/assets/images/verilog2Fpga/fpga.png" alt="image" height="200px" /></p>
+
+<p>I have been playing with Haskell and lately the <a href="https://clash-lang.org/Clash">Clash hardware compiler</a>. Clash transpiles the functional hardware description written in Haskell to the standard HDLs such as Verilog. To be able to run such verilog code in an FPGA, a bitstream needs to be generated to program the FPGA. This post talks about a dockerized pipeline called <a href="https://github.com/Bipinoli/verilog2fpga">Verilog2Fpga</a> to do that.</p>
+
+<h3 id="synthesis-pipeline">Synthesis pipeline</h3>
+<p><a href="https://github.com/Bipinoli/verilog2fpga">Verilog2Fpga</a> uses the existing open-source synthesis tools. It currently programs the iCE40HX1K-BLINK-EVN FPGA as that’s the one I happen to have.</p>
+
+<ol>
+  <li><a href="https://github.com/cliffordwolf/yosys">yosys</a> - to synthesize circult netlist from the HDL</li>
+  <li><a href="https://github.com/YosysHQ/nextpnr">nextpnr</a> - for placing and routing of circuit components for the FPGA</li>
+  <li><a href="https://github.com/cliffordwolf/icestorm/">icestorm</a> - to create a bitstream file with <a href="https://github.com/cliffordwolf/icestorm/">icepack</a> for Lattice iCE40 FPGA</li>
+  <li><a href="https://github.com/reactive-systems/icedude">icedude</a> - to program the iCE40 evaluation board with the produced bitstream</li>
+</ol>
+
+<h3 id="how-to-use">How to use?</h3>
+
+<h4 id="linux">Linux</h4>
+<ol>
+  <li>Connect the FPGA via usb</li>
+  <li>Setup docker container with <code class="language-plaintext highlighter-rouge">./setup_container.sh</code></li>
+  <li>Run <code class="language-plaintext highlighter-rouge">./synthesize.sh</code> with a path to your verilog files (.v, .pcf) as an argument. <br />
+ Eg: <code class="language-plaintext highlighter-rouge">./synthesize.sh example_verilog</code></li>
+</ol>
+
+<h4 id="macos--windows">macOS / Windows</h4>
+<p>On macOS and Windows, the docker runs within a separate VM, so unlike linux, it can’t natively access the usb device. There are many ways this could be handled. Such as:</p>
+<ul>
+  <li>Configuring the VM where docker runs</li>
+  <li>Using tools like <a href="https://linux.die.net/man/1/socat">socat</a> to forward usb data via TCP socket</li>
+</ul>
+
+<h5 id="how-i-configured-for-macos">How I configured for macOS</h5>
+<p>I use Mac so I faced this issue myself. I chose to install a separate linux VM (debian) with virtualbox instead of configuring with the above mentioned methods, mainly for ease. This is how I configured VM</p>
+
+<h6 id="1-identify-the-usb-device">1. Identify the usb device</h6>
+<ul>
+  <li>I ran <code class="language-plaintext highlighter-rouge">ioreg -p IOUSB</code> in macOS which gave me the list of connected usb devices</li>
+  <li>To identify the acutal name of the device, I disconnected the FPGA and ran the command again. The device which disappeared from the list is sure to be the the FPGA device</li>
+</ul>
+
+<p><img src="/assets/images/verilog2Fpga/list_of_usb.png" alt="image" height="200px" /></p>
+
+<h6 id="2-configure-the-vm-to-access-the-identified-usb-device">2. Configure the VM to access the identified USB device</h6>
+<p>With the device name known, I put it in the usb device filters of VM setting. Alternatively, I could have passed through all the usb devices but this gave me more confidence.</p>
+
+<p><img src="/assets/images/verilog2Fpga/configure_vm.png" alt="image" height="300px" /></p>
+
+<p>When the VM was running, I quickly ran <code class="language-plaintext highlighter-rouge">lsusb</code> to verify if it can access the usb device.</p>
+
+<h5 id="running">Running</h5>
+<p>After installing docker in the VM. I simply did:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">./setup_container.sh</code></li>
+  <li><code class="language-plaintext highlighter-rouge">./synthesize.sh example_verilog</code></li>
+</ol>
+
+<p>and that was it.</p>
+
+
+  </div>
+</div>
+
+
+      </div>
+      <div class="sidebar">
+        <div class="sidebar">
+    <h3>All posts</h3>
+    
+    
+      <p>2024</p>
+        <ul>
+          
+            <li><a href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html"  class="current-post" >Dockerized FPGA synthesis pipeline</a></li>
+          
+            <li><a href="/2024/09/14/pkg-config.html" >pkg-config</a></li>
+          
+            <li><a href="/2024/08/01/Git-bisect.html" >Git bisect</a></li>
+          
+        </ul>
+    
+      <p>2020</p>
+        <ul>
+          
+            <li><a href="/2020/01/21/Merkle-tree-in-2-minutes.html" >Essense of Merkle tree</a></li>
+          
+        </ul>
+    
+      <p>2018</p>
+        <ul>
+          
+            <li><a href="/2018/04/26/Tic-tac-toe-with-MiniMax-AI.html" >Tic tac toe with minimax</a></li>
+          
+        </ul>
+    
+</div>
+
+      </div>
+    </div>
+  </body>
+</html>

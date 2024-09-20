@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Git bisect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
+  </head>
+  <body>
+    <div class="top-banner">
+      <p>Learning trail of <a href="https://www.linkedin.com/in/olibipin/">Bipin Oli</a></p>
+    </div>
+
+    <div class="main-container">
+      <div class="content">
+        <h1>Git bisect</h1>
+<p class="page-date">01 Aug 2024</p>
+
+<div class="page-content">
+  
+  <div class="content-with-toc">
+    <p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
+
+<h3 id="how-to-use">How to use?</h3>
+<p>Basically we do manual binary search.</p>
+<ul>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
+</ul>
+
+<p>Before marking current commit as good or bad we check the “change of interest”.
+This could be manual inspection, test run, performance logs, anything.</p>
+
+<h2 id="when-to-use">When to use?</h2>
+<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
+<ul>
+  <li>Where was the bug introduced?</li>
+  <li>What exactly improved this performance?</li>
+  <li>What change cause the test to start failing?</li>
+  <li>etc. etc.</li>
+</ul>
+
+<h3 id="related">Related</h3>
+<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>
+
+  </div>
+</div>
+
+
+      </div>
+      <div class="sidebar">
+        <div class="sidebar">
+    <h3>All posts</h3>
+    
+    
+      <p>2024</p>
+        <ul>
+          
+            <li><a href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html" >Dockerized FPGA synthesis pipeline</a></li>
+          
+            <li><a href="/2024/09/14/pkg-config.html" >pkg-config</a></li>
+          
+            <li><a href="/2024/08/01/Git-bisect.html"  class="current-post" >Git bisect</a></li>
+          
+        </ul>
+    
+      <p>2020</p>
+        <ul>
+          
+            <li><a href="/2020/01/21/Merkle-tree-in-2-minutes.html" >Essense of Merkle tree</a></li>
+          
+        </ul>
+    
+      <p>2018</p>
+        <ul>
+          
+            <li><a href="/2018/04/26/Tic-tac-toe-with-MiniMax-AI.html" >Tic tac toe with minimax</a></li>
+          
+        </ul>
+    
+</div>
+
+      </div>
+    </div>
+  </body>
+</html>
