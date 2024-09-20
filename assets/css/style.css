@@ -30,6 +30,8 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
 }
 .sidebar ul {
   padding: 0;
@@ -37,6 +39,7 @@ body {
   margin-bottom: 1rem;
 }
 .content {
+  overflow: scroll;
   flex: 7;
 }
 .current-post {

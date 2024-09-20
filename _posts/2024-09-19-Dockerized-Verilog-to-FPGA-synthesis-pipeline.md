@@ -35,7 +35,7 @@ I use Mac so I faced this issue myself. I chose to install a separate linux VM (
 - I ran `ioreg -p IOUSB` in macOS which gave me the list of connected usb devices
 - To identify the acutal name of the device, I disconnected the FPGA and ran the command again. The device which disappeared from the list is sure to be the the FPGA device
 
-![image](/assets/images/verilog2Fpga/list_of_usb.png){:height="300px"} 
+![image](/assets/images/verilog2Fpga/list_of_usb.png){:height="200px"} 
 
 ###### 2. Configure the VM to access the identified USB device
 With the device name known, I put it in the usb device filters of VM setting. Alternatively, I could have passed through all the usb devices but this gave me more confidence.
