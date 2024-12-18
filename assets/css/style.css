@@ -6,9 +6,15 @@ body {
   padding: 0.2rem 0;
   font-family: serif;
 }
+.top-banner-content {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .top-banner p {
   margin: 0;
-  margin-left: 10%;
   padding: 0;
 }
 .main-container {

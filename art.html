@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bipin Oli</title>
+    <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 80%;
+            margin: auto;
+        }
+        #modal {
+            display: none;
+            background-color: #000000aa;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        #container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .piece {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .piece img {
+            margin-bottom: 0.5rem;
+        }
+        .piece img:hover {
+            cursor: pointer;
+        }
+        .piece p {
+            margin: 0;
+            padding: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h3>My painting journey</h3>
+    <div id="container"></div>
+    <div id="modal"><img id="modal-img" height="90%"/></div>
+</body>
+<script>
+    const art = [
+        {
+            name: "Flower",
+            created: new Date("2024 13 November"),
+            image: "13_11_24_flower_vase.jpg"
+        },
+        {
+            name: "Yak",
+            created: new Date("2024 14 November"),
+            image: "14_11_24_yak.jpg"
+        },
+        {
+            name: "Owl",
+            created: new Date("2024 16 November"),
+            image: "16_11_24_owl.jpg"
+        },
+        {
+            name: "Tragic Lion",
+            created: new Date("2024 17 November"),
+            image: "17_11_24_tragic_lion.jpg"
+        },
+        {
+            name: "Flemenco party",
+            created: new Date("2024 18 November"),
+            image: "18_11_24_flamencos.jpg"
+        },
+        {
+            name: "Girl in thought",
+            created: new Date("2024 18 December"),
+            image: "18_12_24_girl_in_thought.jpg"
+        },
+        {
+            name: "Robin",
+            created: new Date("2024 19 November"),
+            image: "19_11_24_robin.jpg"
+        },
+        {
+            name: "Fuchs family",
+            created: new Date("2024 25 November"),
+            image: "25_11_24_fuchs_family.jpg"
+        },
+    ];
+
+    const displayBig = (piece) => {
+        let modal = document.getElementById("modal");
+        let img = document.getElementById("modal-img");
+        img.setAttribute("src", "assets/images/paintings/" + piece.image);
+        modal.style.display = "flex";
+        modal.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    };
+
+    const createPiece = (piece) => {
+        let div = document.createElement("div");
+        let img = document.createElement("img");
+        img.setAttribute("src", "assets/images/paintings/" + piece.image);
+        img.setAttribute("height", 300);
+        div.appendChild(img);
+        let name = document.createElement("p");
+        name.textContent = piece.name;
+        div.appendChild(name);
+        let p = document.createElement("p");
+        p.textContent = piece.created.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric'});
+        div.appendChild(p);
+        div.classList.add("piece");
+
+        img.addEventListener('click', () => {
+            displayBig(piece);
+        });
+
+        return div;
+    };
+
+    const cont = document.getElementById("container");
+    art.sort((a, b) => b.created - a.created).forEach(piece => {
+        cont.appendChild(createPiece(piece));
+    });
+
+</script>
+</html>
