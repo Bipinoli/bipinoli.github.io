@@ -1,4 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-10-19T05:58:50-05:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Dockerized FPGA synthesis pipeline</title><link href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html" rel="alternate" type="text/html" title="Dockerized FPGA synthesis pipeline" /><published>2024-09-19T00:00:00-05:00</published><updated>2024-09-19T00:00:00-05:00</updated><id>/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline</id><content type="html" xml:base="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline.html"><![CDATA[<p><img src="/assets/images/verilog2Fpga/fpga.png" alt="image" height="200px" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-12-17T19:08:26-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quine in processor</title><link href="/2024/12/18/AOC-day17.html" rel="alternate" type="text/html" title="Quine in processor" /><published>2024-12-18T00:00:00-06:00</published><updated>2024-12-18T00:00:00-06:00</updated><id>/2024/12/18/AOC-day17</id><content type="html" xml:base="/2024/12/18/AOC-day17.html"><![CDATA[<p><img src="/assets/images/aoc_day17/aoc.png" alt="image" height="100px" /></p>
+
+<p>I found the problem from <a href="https://adventofcode.com/2024/day/17">advent of code day 17</a> quite interesting.</p>
+
+<h2 id="part-1">Part 1</h2>
+<p>Part1 required a simple processor implementation. I modelled that as a <a href="https://en.wikipedia.org/wiki/Mealy_machine">mealy machine</a> in Haskell.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>module Main where
+
+import Data.Bits
+import System.Environment
+
+type Register = Integer
+type IP = Integer
+type State = (Register, Register, Register, IP)
+data OpCode = ADV | BXL | BST | JNZ | BXC | OUT | BDV | CDV 
+    deriving Show
+type Operand = Integer
+type Instr = (Integer, Operand)
+type Output = [Integer]
+
+toOpCode :: Integer -&gt; OpCode
+toOpCode x = case x of 
+    0 -&gt; ADV
+    1 -&gt; BXL
+    2 -&gt; BST
+    3 -&gt; JNZ
+    4 -&gt; BXC
+    5 -&gt; OUT
+    6 -&gt; BDV
+    7 -&gt; CDV
+    _ -&gt; error "impossible"
+
+combo :: Register -&gt; Register -&gt; Register -&gt; Operand -&gt; Operand
+combo a b c x = case x of
+    4 -&gt; a
+    5 -&gt; b
+    6 -&gt; c
+    _ -&gt; x
+
+mealyMachine :: (State, Instr) -&gt; (State, Output)
+mealyMachine (state, instr) = (nextState, output)
+    where 
+        (a, b, c, ip) = state
+        (opcode, operand) = instr
+        (nextState, output) = case toOpCode opcode of 
+            ADV -&gt; ((na, b, c, ip + 2), [])
+                where na = a `div` (2 ^ combo a b c operand) 
+            BXL -&gt; ((a, nb, c, ip + 2), [])
+                where nb = xor b operand
+            BST -&gt; ((a, nb, c, ip + 2), [])
+                where nb = mod (combo a b c operand) 8
+            JNZ -&gt; ((a, b, c, nip), [])
+                where nip = if a == 0 then ip + 2 else operand
+            BXC -&gt; ((a, nb, c, ip + 2), [])
+                where nb = xor b c
+            BDV -&gt; ((a, nb, c, ip + 2), [])
+                where nb = a `div` (2 ^ combo a b c operand) 
+            CDV -&gt; ((a, b, nc, ip + 2), [])
+                where nc = a `div` (2 ^ combo a b c operand) 
+            OUT -&gt; ((a, b, c, ip + 2), [value])
+                where value = mod (combo a b c operand) 8
+
+toInt :: Integer -&gt; Int
+toInt = fromIntegral
+
+run :: [Integer] -&gt; State -&gt; [Integer] -&gt; [Integer]
+run program (a, b, c, ip) outs
+    | toInt ip &gt;= length program = outs
+    | otherwise = allOutpts
+        where 
+            (nextState, output) = mealyMachine ((a,b,c,ip), (program !! toInt ip, program !! (toInt ip + 1)))
+            allOutpts = run program nextState (outs ++ output)
+        
+
+program :: [Integer]
+program = [2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0]
+
+
+main :: IO()
+main = do
+    args &lt;- getArgs
+    let x = read (head args):: Integer
+    let initState = (x, 0, 0, 0) :: State
+    print $ run program initState []
+</code></pre></div></div>
+
+<h2 id="part-2">Part 2</h2>
+
+<h4 id="problem">Problem</h4>
+
+<p>Part 2 asks us to find the value for a register <code class="language-plaintext highlighter-rouge">A</code> such that when we run the program <code class="language-plaintext highlighter-rouge">Program: 2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0</code> we get exactly the same output as the program itself. Just like <a href="https://en.wikipedia.org/wiki/Quine_(computing)">quine programs</a>.</p>
+
+<p>For example, if we run the following program we get the exact output as <code class="language-plaintext highlighter-rouge">0,3,5,4,3,0</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Register A: 117440
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0
+</code></pre></div></div>
+
+<h4 id="solution">Solution</h4>
+
+<p>Since the number in register A can be arbitrarily large. We can’t just brute force to find the answer. So we need to find some way to reduce the search space.</p>
+
+<p>To get some intuition, I ran the processor multiple times with increasing value of ‘A’.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./main 0 = [5]
+./main 50 = [1, 3]
+./main 100 = [2, 1, 5]
+./main 150 = [2, 5, 7]
+./main 200 = [1, 5, 6]
+./main 250 = [0, 2, 6]
+./main 300 = [0, 2, 1]
+./main 350 = [1, 4, 0]
+./main 400 = [5, 1, 3]
+./main 450 = [7, 1, 2]
+./main 500 = [6, 3, 2]
+./main 550 = [7, 3, 1, 5]
+./main 600 = [1, 4, 5, 5]
+./main 650 = [6, 5, 6, 5]
+./main 700 = [4, 3, 6, 5]
+./main 750 = [6, 5, 4, 5]
+./main 800 = [5, 2, 1, 5]
+./main 850 = [5, 2, 0, 5]
+./main 900 = [5, 5, 3, 5]
+./main 950 = [4, 3, 3, 5]
+./main 1000 = [1, 7, 2, 5]
+./main 1050 = [4, 6, 5, 7]
+./main 1100 = [3, 5, 5, 7]
+./main 1150 = [3, 0, 5, 7]
+./main 1200 = [5, 2, 5, 7]
+./main 1250 = [3, 5, 2, 7]
+./main 1300 = [1, 3, 1, 7]
+./main 1350 = [1, 1, 1, 7]
+./main 1400 = [1, 0, 1, 7]
+./main 1450 = [2, 3, 3, 7]
+</code></pre></div></div>
+
+<p>Here we can observe 2 main things:</p>
+<ol>
+  <li>When running the processor with increasing value of <code class="language-plaintext highlighter-rouge">A</code>, the length of output monotonically increases. So, we can use binary search to find the window where the output has the desired length.</li>
+  <li>As we increase <code class="language-plaintext highlighter-rouge">A</code> The values in output changes more frequently in left than at right, which means to see a change in the rightmost output value we will have to wait much further.  So, I start with a big step size and identify the range where the rightmost value appears. Within those windows, I reduce the step size by an order of magnitude and identify the range where the second last value would appear. I do this on an on from right to left.</li>
+</ol>
+
+<p>This way we dramatically reduce the search space to find the solution.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import subprocess
+
+def run_machine(x):
+    result = subprocess.run(['./main', f'{x}'], capture_output=True, text=True)
+    return [int(i) for i in result.stdout.strip()[1:-1].split(',')]
+
+def binary_search_length(target_len):
+    lo = 1
+    hi = int(1e22)
+    while lo + 1 &lt; hi:
+        md = (lo + hi) // 2
+        cur_len = len(run_machine(md))
+        if cur_len &lt; target_len:
+            lo = md
+        else:
+            hi = md
+    return hi
+
+
+desired_output = [2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0]
+
+def search_in(lo, hi, step, index):
+    print(lo, hi, step, index)
+    ans = []
+    inside = False
+    last_i = lo
+    for i in range(lo, hi, step):
+        result = run_machine(i)
+        if result[index] == desired_output[index]:
+            if not inside:
+                inside = True
+        elif inside:
+            ans.append((last_i, i))
+            inside = False
+        else:
+            last_i = i
+    if inside:
+        ans.append((last_i, hi))
+    return ans
+
+
+def solve():
+    lo = binary_search_length(len(desired_output))
+    hi = binary_search_length(len(desired_output) + 1)
+    step = 1_000_000_000_000
+
+    possibles = [(lo, hi)]
+    for i in reversed(range(2, len(desired_output))):
+        print(i, possibles, step)
+        new_possibles = []
+        for (l, h) in possibles:
+            new_possibles.extend(search_in(l, h, step, i))
+        possibles = new_possibles
+        step //=10
+    print(i, possibles, step)
+
+possibles = solve()
+
+for  (l, h) in possibles:
+    print(l, h)
+    for i in range(l, h):
+        result = run_machine(i)
+        if all([a == b for (a,b) in zip(desired_output, result)]):
+            print(f"answer found: {i}")
+            exit(0)
+            break
+</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Dockerized FPGA synthesis pipeline</title><link href="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline-copy.html" rel="alternate" type="text/html" title="Dockerized FPGA synthesis pipeline" /><published>2024-09-19T00:00:00-05:00</published><updated>2024-09-19T00:00:00-05:00</updated><id>/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline%20copy</id><content type="html" xml:base="/2024/09/19/Dockerized-Verilog-to-FPGA-synthesis-pipeline-copy.html"><![CDATA[<p><img src="/assets/images/verilog2Fpga/fpga.png" alt="image" height="200px" /></p>
 
 <p>I have been playing with Haskell and lately the <a href="https://clash-lang.org/Clash">Clash hardware compiler</a>. Clash transpiles the functional hardware description written in Haskell to the standard HDLs such as Verilog. To be able to run such verilog code in an FPGA, a bitstream needs to be generated to program the FPGA. This post talks about a dockerized pipeline called <a href="https://github.com/Bipinoli/verilog2fpga">Verilog2Fpga</a> to do that.</p>
 
@@ -89,31 +301,7 @@
 <code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr -I/opt/local/include/libpng16 -I/opt/local/include -L/opt/local/lib -lpng16</code></p>
 
 <p>or even better: <br />
-<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr $(pkg-config --libs -cflags libpng)</code></p>]]></content><author><name></name></author><summary type="html"><![CDATA[pkg-config is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: include path of header files link path of library files version of library etc.]]></summary></entry><entry><title type="html">Git bisect</title><link href="/2024/08/01/Git-bisect.html" rel="alternate" type="text/html" title="Git bisect" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/Git-bisect</id><content type="html" xml:base="/2024/08/01/Git-bisect.html"><![CDATA[<p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
-
-<h3 id="how-to-use">How to use?</h3>
-<p>Basically we do manual binary search.</p>
-<ul>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
-</ul>
-
-<p>Before marking current commit as good or bad we check the “change of interest”.
-This could be manual inspection, test run, performance logs, anything.</p>
-
-<h2 id="when-to-use">When to use?</h2>
-<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
-<ul>
-  <li>Where was the bug introduced?</li>
-  <li>What exactly improved this performance?</li>
-  <li>What change cause the test to start failing?</li>
-  <li>etc. etc.</li>
-</ul>
-
-<h3 id="related">Related</h3>
-<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>]]></content><author><name></name></author><summary type="html"><![CDATA[Git bisect is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so git bisect bad command is used to indicate observation of it.]]></summary></entry><entry><title type="html">My notes on Haskell</title><link href="/2024/08/01/My-notes-on-Haskell.html" rel="alternate" type="text/html" title="My notes on Haskell" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/My-notes-on-Haskell</id><content type="html" xml:base="/2024/08/01/My-notes-on-Haskell.html"><![CDATA[<h4 id="let-and-where">Let and where</h4>
+<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr $(pkg-config --libs -cflags libpng)</code></p>]]></content><author><name></name></author><summary type="html"><![CDATA[pkg-config is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: include path of header files link path of library files version of library etc.]]></summary></entry><entry><title type="html">My notes on Haskell</title><link href="/2024/08/01/My-notes-on-Haskell.html" rel="alternate" type="text/html" title="My notes on Haskell" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/My-notes-on-Haskell</id><content type="html" xml:base="/2024/08/01/My-notes-on-Haskell.html"><![CDATA[<h4 id="let-and-where">Let and where</h4>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>module Main where 
 
 -- let 
@@ -527,7 +715,31 @@ main = do
 
 Explanation:
 Bitsize is a type family that takes in a type 'a' and gives us a 'Nat' i.e Natual number type
-</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[Let and where ``` module Main where]]></summary></entry><entry><title type="html">Essense of Merkle tree</title><link href="/2020/01/21/Merkle-tree-in-2-minutes.html" rel="alternate" type="text/html" title="Essense of Merkle tree" /><published>2020-01-21T00:00:00-06:00</published><updated>2020-01-21T00:00:00-06:00</updated><id>/2020/01/21/Merkle-tree-in-2-minutes</id><content type="html" xml:base="/2020/01/21/Merkle-tree-in-2-minutes.html"><![CDATA[<p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
+</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[Let and where ``` module Main where]]></summary></entry><entry><title type="html">Git bisect</title><link href="/2024/08/01/Git-bisect.html" rel="alternate" type="text/html" title="Git bisect" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/Git-bisect</id><content type="html" xml:base="/2024/08/01/Git-bisect.html"><![CDATA[<p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
+
+<h3 id="how-to-use">How to use?</h3>
+<p>Basically we do manual binary search.</p>
+<ul>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
+</ul>
+
+<p>Before marking current commit as good or bad we check the “change of interest”.
+This could be manual inspection, test run, performance logs, anything.</p>
+
+<h2 id="when-to-use">When to use?</h2>
+<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
+<ul>
+  <li>Where was the bug introduced?</li>
+  <li>What exactly improved this performance?</li>
+  <li>What change cause the test to start failing?</li>
+  <li>etc. etc.</li>
+</ul>
+
+<h3 id="related">Related</h3>
+<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>]]></content><author><name></name></author><summary type="html"><![CDATA[Git bisect is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so git bisect bad command is used to indicate observation of it.]]></summary></entry><entry><title type="html">Essense of Merkle tree</title><link href="/2020/01/21/Merkle-tree-in-2-minutes.html" rel="alternate" type="text/html" title="Essense of Merkle tree" /><published>2020-01-21T00:00:00-06:00</published><updated>2020-01-21T00:00:00-06:00</updated><id>/2020/01/21/Merkle-tree-in-2-minutes</id><content type="html" xml:base="/2020/01/21/Merkle-tree-in-2-minutes.html"><![CDATA[<p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
 
 <p><img src="/assets/images/merkle_tree/merkle.png" alt="image" height="500px" /></p>
 
