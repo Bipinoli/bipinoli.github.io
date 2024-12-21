@@ -28,6 +28,15 @@
         #modal .carousel-item {
             height: 80vh;
         }
+        @media screen and (max-width: 600px) {
+            #modal .carousel-item {
+                height: auto;
+                width: 80vw;
+            }
+            .carousel-item .img-in-carousel {
+                width: 100%;
+            }
+        }
         #container {
             display: flex;
             gap: 1rem;
@@ -111,6 +120,11 @@
             created: new Date("2024-12-20"),
             images: ["24_12_20_viktor.jpg", "24_12_20_viktor2.jpg"]
         },
+        {
+            name: "Bhagavati",
+            created: new Date("2024-12-21"),
+            images: ["24_12_21_Bhagavati2.jpg", "24_12_21_Bhagavati3.jpg", "24_12_21_Bhagavati1.jpg" ]
+        },
     ];
 
     const dispalyInModal = (child) => {
@@ -131,7 +145,7 @@
         const images = piece.images.map((image, index) => {
             return `
                 <div class="carousel-item ${index == 0 ? 'active' : ''}">
-                    <img height="${isBig ? '100%' : '300'}" src="assets/images/paintings/${image}" />
+                    <img class='${isBig ? 'img-in-carousel' : ''}' height="${isBig ? '100%' : '300'}" src="assets/images/paintings/${image}" />
                 </div>
             `;
         });
