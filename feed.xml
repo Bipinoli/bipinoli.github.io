@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-01-12T09:37:34-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quine in processor</title><link href="/2024/12/18/AOC-day17.html" rel="alternate" type="text/html" title="Quine in processor" /><published>2024-12-18T00:00:00-06:00</published><updated>2024-12-18T00:00:00-06:00</updated><id>/2024/12/18/AOC-day17</id><content type="html" xml:base="/2024/12/18/AOC-day17.html"><![CDATA[<p><img src="/assets/images/aoc_day17/aoc.png" alt="image" height="100px" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-01-12T11:06:22-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quine in processor</title><link href="/2024/12/18/AOC-day17.html" rel="alternate" type="text/html" title="Quine in processor" /><published>2024-12-18T00:00:00-06:00</published><updated>2024-12-18T00:00:00-06:00</updated><id>/2024/12/18/AOC-day17</id><content type="html" xml:base="/2024/12/18/AOC-day17.html"><![CDATA[<p><img src="/assets/images/aoc_day17/aoc.png" alt="image" height="100px" /></p>
 
 <p>I found the problem from <a href="https://adventofcode.com/2024/day/17">advent of code day 17</a> quite interesting.</p>
 
@@ -667,46 +667,35 @@ ghci&gt;
 </code></pre></div></div>
 
 <h4 id="gadt">GADT</h4>
-<p>Generalised Algebraic Datatype (GADT) is a language extension to Haskell. GADT allows a way to provide precise typing to the data constructor.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{-# LANGUAGE GADTs #-}
-{-# LANGUAGE StandaloneDeriving #-}
-module Main where
+<p>Generalised Algebraic Datatype (GADT) is a language extension to Haskell that improves the normal Algebraic Datatype of Haskell by including type checking in the data constructor.</p>
 
--- normal algebraic data type
-data Expr a = Constant a | Addition (Expr a) (Expr a)
-
--- Generalized algebraic data type (GADT)
-data Expr2 a where 
-    Const :: a -&gt; Expr2 a
-    Add :: Expr2 Int -&gt; Expr2 Int -&gt; Expr2 Int
-    IsZero :: Expr2 Int -&gt; Expr2 Bool
-
-deriving instance Show a =&gt; Show (Expr2 a)
-
-eval :: Expr2 a -&gt; a
-eval (Const x)  = x
-eval (Add x y) = eval x + eval y
-eval (IsZero x) = eval x == 0
-
-
+<p>For example with a normal ADT:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data Expr = IntLit Int | 
+             BoolLit Bool | 
+             Add Expr Expr 
+          deriving (Show)
+          
 main :: IO ()
-main = do
-    print $ show $ Const 5
-    print $ show $ Add (Const 8) (Const 5)
-    print $ show $ IsZero (Const 5)
-    print $ show $ eval $ Const 5
-    print $ show $ eval $ Add (Const 8) (Const 5)
-    print $ show $ eval $ IsZero (Const 5)
-
-
----- Output
-"Const 5"
-"Add (Const 8) (Const 5)"
-"IsZero (Const 5)"
-"5"
-"13"
-"False"
+main = do 
+  print $ Add (BoolLit True) (IntLit 2)
 </code></pre></div></div>
+
+<p>Here we can create an expression that adds boolean and int literals. It would be nice to enforce the exact type of expression that could be added, and this is exactly what GADT provides.</p>
+
+<p>With GADT:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{-# LANGUAGE GADTs #-}
+
+data Expr a where
+  IntLit :: Int -&gt; Expr Int
+  BoolLit :: Bool -&gt; Expr Bool
+  Add :: Expr Int -&gt; Expr Int -&gt; Expr Int
+deriving instance (Show a) =&gt; Show (Expr a)
+  
+main :: IO()
+main = do
+  print $ Add (BoolLit True) (IntLit 2)
+</code></pre></div></div>
+<p>would give a compile time error as the Add expression can only work with two Int expressions.</p>
 
 <h4 id="haskell-extensions">Haskell Extensions</h4>
 <h5 id="type-family">Type Family</h5>
