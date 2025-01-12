@@ -388,47 +388,37 @@ ghci>
 ```
 
 #### GADT
-Generalised Algebraic Datatype (GADT) is a language extension to Haskell. GADT allows a way to provide precise typing to the data constructor. 
+Generalised Algebraic Datatype (GADT) is a language extension to Haskell that improves the normal Algebraic Datatype of Haskell by including type checking in the data constructor. 
+
+For example with a normal ADT:
+```
+data Expr = IntLit Int | 
+             BoolLit Bool | 
+             Add Expr Expr 
+          deriving (Show)
+          
+main :: IO ()
+main = do 
+  print $ Add (BoolLit True) (IntLit 2)
+```
+
+Here we can create an expression that adds boolean and int literals. It would be nice to enforce the exact type of expression that could be added, and this is exactly what GADT provides.
+
+With GADT:
 ```
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE StandaloneDeriving #-}
-module Main where
 
--- normal algebraic data type
-data Expr a = Constant a | Addition (Expr a) (Expr a)
-
--- Generalized algebraic data type (GADT)
-data Expr2 a where 
-    Const :: a -> Expr2 a
-    Add :: Expr2 Int -> Expr2 Int -> Expr2 Int
-    IsZero :: Expr2 Int -> Expr2 Bool
-
-deriving instance Show a => Show (Expr2 a)
-
-eval :: Expr2 a -> a
-eval (Const x)  = x
-eval (Add x y) = eval x + eval y
-eval (IsZero x) = eval x == 0
-
-
-main :: IO ()
+data Expr a where
+  IntLit :: Int -> Expr Int
+  BoolLit :: Bool -> Expr Bool
+  Add :: Expr Int -> Expr Int -> Expr Int
+deriving instance (Show a) => Show (Expr a)
+  
+main :: IO()
 main = do
-    print $ show $ Const 5
-    print $ show $ Add (Const 8) (Const 5)
-    print $ show $ IsZero (Const 5)
-    print $ show $ eval $ Const 5
-    print $ show $ eval $ Add (Const 8) (Const 5)
-    print $ show $ eval $ IsZero (Const 5)
-
-
----- Output
-"Const 5"
-"Add (Const 8) (Const 5)"
-"IsZero (Const 5)"
-"5"
-"13"
-"False"
+  print $ Add (BoolLit True) (IntLit 2)
 ```
+would give a compile time error as the Add expression can only work with two Int expressions.
 
 #### Haskell Extensions
 ##### Type Family
