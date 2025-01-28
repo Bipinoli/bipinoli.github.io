@@ -167,7 +167,6 @@
     };
 
     const createCarousel = (piece, id, isBig = false) => {
-        console.log(isBig);
         const div = document.createElement('div');
         div.id = id;
         div.classList.add('carousel');
@@ -208,7 +207,7 @@
 
     const createPiece = (piece) => {
         const div = document.createElement("div");
-        const carousel = createCarousel(piece,  piece.name);
+        const carousel = createCarousel(piece,  piece.created.getTime());
         div.appendChild(carousel);
         const name = document.createElement("p");
         name.textContent = piece.name;
@@ -219,7 +218,7 @@
         div.classList.add("piece"); 
 
         carousel.getElementsByClassName("carousel-inner")[0].addEventListener('click', () => {
-            dispalyInModal(createCarousel(piece, piece.name + 'modal', true));
+            dispalyInModal(createCarousel(piece, piece.created.getTime() + 'modal', true));
         });
 
         return div;
