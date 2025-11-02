@@ -1,4 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-08-22T03:01:09-05:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quine in processor</title><link href="/2024/12/18/AOC-day17.html" rel="alternate" type="text/html" title="Quine in processor" /><published>2024-12-18T00:00:00-06:00</published><updated>2024-12-18T00:00:00-06:00</updated><id>/2024/12/18/AOC-day17</id><content type="html" xml:base="/2024/12/18/AOC-day17.html"><![CDATA[<p><img src="/assets/images/aoc_day17/aoc.png" alt="image" height="100px" /></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-11-02T08:22:02-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Concurrent quicksort algorithm with custom thread pool in C++</title><link href="/2025/11/02/concurrent-quicksort.html" rel="alternate" type="text/html" title="Concurrent quicksort algorithm with custom thread pool in C++" /><published>2025-11-02T00:00:00-05:00</published><updated>2025-11-02T00:00:00-05:00</updated><id>/2025/11/02/concurrent-quicksort</id><content type="html" xml:base="/2025/11/02/concurrent-quicksort.html"><![CDATA[<p>While reading <i>C++ Concurrency in Action</i>, I got the idea of implementing a concurrent version of the quicksort algorithm. My plan was to create a pool of worker threads and use them to concurrently execute the recursive subtasks of the sort. <a href="https://github.com/Bipinoli/cpp-concurrency-in-action-notes/tree/main/chapter4_synchronizing_concurrent_operations/quick_sort">This is my implementation on GitHub</a>. In this post, I want to document the idea and share my general thought process.</p>
+
+<h4 id="step-1-sequential-quicksort-algorithm">Step 1: Sequential quicksort algorithm</h4>
+<p><a href="https://github.com/Bipinoli/cpp-concurrency-in-action-notes/blob/main/chapter4_synchronizing_concurrent_operations/quick_sort/sequential.hpp">Link to the sequential implementation</a></p>
+
+<p>The quicksort algorithm sorts numbers using the divide-and-conquer strategy. The idea is to choose a number in the array as a pivot and arrange the elements so that the numbers less than the pivot are on the left and the greater ones are on the right, thereby fixing the pivot’s final position in the array. After this, the subarrays on the left and right can follow the same process.</p>
+
+<p>I realized I had never actually implemented quicksort before, and I was too proud to look up any examples, so it took me some time to figure out a good in-place solution for rearranging the numbers around the pivot. After <a href="https://github.com/Bipinoli/cpp-concurrency-in-action-notes/blob/main/chapter4_synchronizing_concurrent_operations/quick_sort/test.hpp">testing</a> the implementation with randomly generated arrays, I was satisfied with the results and moved on to the concurrent version.</p>
+
+<h4 id="step-2-concurrent-quicksort-algorithm">Step 2: Concurrent quicksort algorithm</h4>
+<p><a href="https://github.com/Bipinoli/cpp-concurrency-in-action-notes/blob/main/chapter4_synchronizing_concurrent_operations/quick_sort/concurrent.hpp">Link to the concurrent implementation</a></p>
+
+<p>The quicksort algorithm has a recursive structure like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sort: [n,n,n,n,n,n,n]
+- choose pivot p &amp; arrange numbers around it [s,s,s,p,p,b,b]
+- sort smaller [s,s,s]
+- sort bigger [b,b]
+</code></pre></div></div>
+<p>This shows the <a href="https://en.wikipedia.org/wiki/Tail_call">tail-recursive</a> nature of the algorithm. After the arrangement step, the positions of the pivot elements are final. Therefore, we don’t need to know the results of the sub-tasks.</p>
+
+<h5 id="worker-system">Worker system</h5>
+<p>So, the idea is quite simple. Let’s set up a pool of worker threads. Each worker will fetch a task from the task queue. A task contains a reference to an array, along with the start and end indices to sort in place. The worker selects a pivot and arranges the numbers around it. After that, it creates the necessary sub-tasks and submits them back to the task queue, where they can be picked up by any available worker. In this way, multiple workers can concurrently sort different parts of the array. Since there’s no interdependency, we can even apply this to multiple arrays at once, i.e. a batch of arrays.</p>
+
+<h5 id="knowing-when-sort-has-finished">Knowing when sort has finished</h5>
+<p>It’s important to know when the sorting process has completed. Since each worker only handles a portion of the array, it doesn’t have enough information on its own to determine whether all sub-tasks are finished. To manage this, we maintain a count of all in-progress sub-tasks. Whenever a task is subdivided, the worker increments an atomic counter to reflect the creation of new sub-tasks. When there are no further sub-tasks to divide and the pivoting is complete, the worker decrements the in-progress counter and notifies the main thread. The main thread waits for this notification and checks the counter to determine whether all sub-tasks have finished.</p>
+
+<p>Note that this counter-based scheme works because we don’t need to maintain a stack of sub-task statuses, thanks to the tail-recursive nature of the algorithm.</p>
+
+<h4 id="step-3-validation">Step 3: Validation</h4>
+<p>I wanted to roughly validate that the concurrent implementation was working. To do this, I created a sufficiently large batch of arrays so that the thread overhead would be justified, and I could observe whether the concurrent version actually took less time. I generated a random batch of sort tasks and measured the execution time for each.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>boli@Bipins-MBP quick_sort % ./build/main
+main(62428,0x109480600) malloc: nano zone abandoned due to inability to preallocate reserved vm space.
+Sequential quicksort test passed!
+Concurrent quicksort test passed!
+--------------------------------
+Performance comparison between sequential quicksort and concurrent quicksort:
+Sorting batch #0 with 5357214 numbers in total
+Sorting completed by sequential quicksort in 17243 ms
+Sorting completed by concurrent quicksort with 7 workers in 5434 ms
+Sorting batch #1 with 4751498 numbers in total
+Sorting completed by sequential quicksort in 19370 ms
+Sorting completed by concurrent quicksort with 7 workers in 4616 ms
+Sorting batch #2 with 5283119 numbers in total
+Sorting completed by sequential quicksort in 17046 ms
+Sorting completed by concurrent quicksort with 7 workers in 4736 ms
+Sorting batch #3 with 5415888 numbers in total
+Sorting completed by sequential quicksort in 17375 ms
+Sorting completed by concurrent quicksort with 7 workers in 4728 ms
+boli@Bipins-MBP quick_sort %
+</code></pre></div></div>
+
+<p>It would be nice to have some observability metrics to see exactly how busy the workers were with actual compute tasks. The total execution time seems excessively large for what the program does. However, the important thing is that concurrency does appear to bring performance benefits, which is what I wanted to confirm.</p>
+
+<p>In the future, I’d like to explore Linux’s <i>perf</i> or try some eBPF-based tools for deeper analysis. The <a href="https://perfwiki.github.io/main/">perf wiki guide</a> is already on my reading list, and it would be great to revisit here once I’ve gone through it.</p>
+
+<p>For now, though, it’s time to continue with the other chapters of the book.</p>
+
+<p>Thank you for reading. Adios!</p>]]></content><author><name></name></author><summary type="html"><![CDATA[While reading C++ Concurrency in Action, I got the idea of implementing a concurrent version of the quicksort algorithm. My plan was to create a pool of worker threads and use them to concurrently execute the recursive subtasks of the sort. This is my implementation on GitHub. In this post, I want to document the idea and share my general thought process.]]></summary></entry><entry><title type="html">Quine in processor</title><link href="/2024/12/18/AOC-day17.html" rel="alternate" type="text/html" title="Quine in processor" /><published>2024-12-18T00:00:00-06:00</published><updated>2024-12-18T00:00:00-06:00</updated><id>/2024/12/18/AOC-day17</id><content type="html" xml:base="/2024/12/18/AOC-day17.html"><![CDATA[<p><img src="/assets/images/aoc_day17/aoc.png" alt="image" height="100px" /></p>
 
 <p>I found the problem from <a href="https://adventofcode.com/2024/day/17">advent of code day 17</a> quite interesting.</p>
 
@@ -301,7 +359,31 @@ for  (l, h) in possibles:
 <code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr -I/opt/local/include/libpng16 -I/opt/local/include -L/opt/local/lib -lpng16</code></p>
 
 <p>or even better: <br />
-<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr $(pkg-config --libs -cflags libpng)</code></p>]]></content><author><name></name></author><summary type="html"><![CDATA[pkg-config is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: include path of header files link path of library files version of library etc.]]></summary></entry><entry><title type="html">My notes on Haskell</title><link href="/2024/08/01/My-notes-on-Haskell.html" rel="alternate" type="text/html" title="My notes on Haskell" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/My-notes-on-Haskell</id><content type="html" xml:base="/2024/08/01/My-notes-on-Haskell.html"><![CDATA[<h4 id="let-and-where">Let and where</h4>
+<code class="language-plaintext highlighter-rouge">gcc pngViewr.c -o pngViewr $(pkg-config --libs -cflags libpng)</code></p>]]></content><author><name></name></author><summary type="html"><![CDATA[pkg-config is a tool that originated in Linux to view the meta information about installed libraries. It can be used to know things like: include path of header files link path of library files version of library etc.]]></summary></entry><entry><title type="html">Git bisect</title><link href="/2024/08/01/Git-bisect.html" rel="alternate" type="text/html" title="Git bisect" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/Git-bisect</id><content type="html" xml:base="/2024/08/01/Git-bisect.html"><![CDATA[<p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
+
+<h3 id="how-to-use">How to use?</h3>
+<p>Basically we do manual binary search.</p>
+<ul>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
+  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
+</ul>
+
+<p>Before marking current commit as good or bad we check the “change of interest”.
+This could be manual inspection, test run, performance logs, anything.</p>
+
+<h2 id="when-to-use">When to use?</h2>
+<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
+<ul>
+  <li>Where was the bug introduced?</li>
+  <li>What exactly improved this performance?</li>
+  <li>What change cause the test to start failing?</li>
+  <li>etc. etc.</li>
+</ul>
+
+<h3 id="related">Related</h3>
+<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>]]></content><author><name></name></author><summary type="html"><![CDATA[Git bisect is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so git bisect bad command is used to indicate observation of it.]]></summary></entry><entry><title type="html">My notes on Haskell</title><link href="/2024/08/01/My-notes-on-Haskell.html" rel="alternate" type="text/html" title="My notes on Haskell" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/My-notes-on-Haskell</id><content type="html" xml:base="/2024/08/01/My-notes-on-Haskell.html"><![CDATA[<h4 id="let-and-where">Let and where</h4>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>module Main where 
 
 -- let 
@@ -704,31 +786,7 @@ main = do
 
 Explanation:
 Bitsize is a type family that takes in a type 'a' and gives us a 'Nat' i.e Natual number type
-</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[Let and where ``` module Main where]]></summary></entry><entry><title type="html">Git bisect</title><link href="/2024/08/01/Git-bisect.html" rel="alternate" type="text/html" title="Git bisect" /><published>2024-08-01T00:00:00-05:00</published><updated>2024-08-01T00:00:00-05:00</updated><id>/2024/08/01/Git-bisect</id><content type="html" xml:base="/2024/08/01/Git-bisect.html"><![CDATA[<p><a href="https://git-scm.com/docs/git-bisect">Git bisect</a> is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so <code class="language-plaintext highlighter-rouge">git bisect bad</code> command is used to indicate observation of it.</p>
-
-<h3 id="how-to-use">How to use?</h3>
-<p>Basically we do manual binary search.</p>
-<ul>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect start</code> to start git bisect</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect bad</code> to mark current commit as bad</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect good &lt;&lt;commit_hash&gt;&gt;</code> to mark good commit</li>
-  <li>do <code class="language-plaintext highlighter-rouge">git bisect</code> to bisect to a mid commit</li>
-</ul>
-
-<p>Before marking current commit as good or bad we check the “change of interest”.
-This could be manual inspection, test run, performance logs, anything.</p>
-
-<h2 id="when-to-use">When to use?</h2>
-<p>Anytime you want to locate the actual commit that caused the change. The affect of change must be reproducible.</p>
-<ul>
-  <li>Where was the bug introduced?</li>
-  <li>What exactly improved this performance?</li>
-  <li>What change cause the test to start failing?</li>
-  <li>etc. etc.</li>
-</ul>
-
-<h3 id="related">Related</h3>
-<p><a href="https://research.swtch.com/bisect">Russ cox’s blog on “Hash-Based Bisect Debugging in Compilers and Runtimes”</a></p>]]></content><author><name></name></author><summary type="html"><![CDATA[Git bisect is a tool that does binary search in the git history between commits to locate the actual commit where the change of interest happen. This “change of interest” is usually a bug, so git bisect bad command is used to indicate observation of it.]]></summary></entry><entry><title type="html">Essense of Merkle tree</title><link href="/2020/01/21/Merkle-tree-in-2-minutes.html" rel="alternate" type="text/html" title="Essense of Merkle tree" /><published>2020-01-21T00:00:00-06:00</published><updated>2020-01-21T00:00:00-06:00</updated><id>/2020/01/21/Merkle-tree-in-2-minutes</id><content type="html" xml:base="/2020/01/21/Merkle-tree-in-2-minutes.html"><![CDATA[<p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
+</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[Let and where ``` module Main where]]></summary></entry><entry><title type="html">Essense of Merkle tree</title><link href="/2020/01/21/Merkle-tree-in-2-minutes.html" rel="alternate" type="text/html" title="Essense of Merkle tree" /><published>2020-01-21T00:00:00-06:00</published><updated>2020-01-21T00:00:00-06:00</updated><id>/2020/01/21/Merkle-tree-in-2-minutes</id><content type="html" xml:base="/2020/01/21/Merkle-tree-in-2-minutes.html"><![CDATA[<p>To construct a Merkel Tree, we basically hash the individual data blocks and hash those hashes and hash those hashes and so on. Forming a tree structure.</p>
 
 <p><img src="/assets/images/merkle_tree/merkle.png" alt="image" height="500px" /></p>
 
