@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-11-14T06:25:33-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Concurrent quicksort algorithm with custom thread pool in C++</title><link href="/2025/11/02/concurrent-quicksort.html" rel="alternate" type="text/html" title="Concurrent quicksort algorithm with custom thread pool in C++" /><published>2025-11-02T00:00:00-05:00</published><updated>2025-11-02T00:00:00-05:00</updated><id>/2025/11/02/concurrent-quicksort</id><content type="html" xml:base="/2025/11/02/concurrent-quicksort.html"><![CDATA[<p>While reading <i>C++ Concurrency in Action</i>, I got the idea of implementing a concurrent version of the quicksort algorithm. My plan was to create a pool of worker threads and use them to concurrently execute the recursive subtasks of the sort. <a href="https://github.com/Bipinoli/performance-focused-programming/tree/89f16df1ff8111fe852ec630e2ab2c3fbefda52d/quiksort_workers_multi_threaded">This is my implementation on GitHub</a>. In this post, I want to document the idea and share my general thought process.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2025-11-29T17:43:35-06:00</updated><id>/feed.xml</id><title type="html">Bipin Oli</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Memory alignment mystery</title><link href="/2025/11/29/Alignment-mystery.html" rel="alternate" type="text/html" title="Memory alignment mystery" /><published>2025-11-29T00:00:00-06:00</published><updated>2025-11-29T00:00:00-06:00</updated><id>/2025/11/29/Alignment-mystery</id><content type="html" xml:base="/2025/11/29/Alignment-mystery.html"><![CDATA[<p>While playing with C, I encountered this interesting alignment padding behaviour in <code class="language-plaintext highlighter-rouge">struct</code>.</p>
+
+<p>For <code class="language-plaintext highlighter-rouge">struct</code> as follows:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">AlignmentCheck</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+  <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Here <code class="language-plaintext highlighter-rouge">char</code> takes 1 byte, <code class="language-plaintext highlighter-rouge">double</code> takes 8 bytes, <code class="language-plaintext highlighter-rouge">int</code> takes 4 bytes. However, we need to introduce padding bytes to align the data properly in memory.</p>
+
+<p>I was expecting the compiler to reorder the fields such that data can be aligned while reducing the number of padding. 
+However, the compiler didn’t do this even with <code class="language-plaintext highlighter-rouge">-O3</code> optimization enabled, which surprised me.</p>
+
+<p>For context, processors operate on data in units of its word size. For example, 64 bits on a 64-bit CPU. Therefore, data must be properly aligned in memory. For instance, a 64-bit word can hold two 32-bit integers, but only if they are aligned correctly, starting at a memory address that is a multiple of their size. Proper alignment ensures that each data element resides at a memory location that is a multiple of its own size, which allows the CPU to access it efficiently. Improper alignment can cause the CPU to fetch the data multiple times in order to access the complete value. Additionally, the data may be split across cache lines, which can further reduce performance.</p>
+
+<p>So, for our struct above, if we store the fields in the given order (char -&gt; double -&gt; int):</p>
+<ul>
+  <li>The double must be 8-byte aligned, so we need to introduce 7 bytes of padding between char and double.</li>
+  <li>Similarly, if we don’t add any padding after int, the next element in an array of this struct could have its double at a misaligned address. Therefore, we also need 4 bytes of padding at the end.</li>
+</ul>
+
+<p>This brings the total size of the struct to 24 bytes.</p>
+
+<p>I was expecting the compiler to reorder the fields automatically, for example, double -&gt; int -&gt; char, which would reduce padding and produce a more compact 16-byte struct. However, that didn’t happen.</p>
+
+<p>After investigating, I found that C strictly enforces the order of struct fields for ABI compatibility and memory-mapped I/O. This means it is up to the programmer to be mindful of alignment.</p>
+
+<p>A common strategy to reduce padding seems to be to order struct fields from largest to smallest, which naturally produces a more compact memory layout. This can be a useful micro-optimization, especially when working with large arrays of such structs, since even a small reduction in padding can lead to more data fetched per memory access or better cache utilization.</p>
+
+<p>If the struct is only being used to serialize data for I/O, padding can be wasteful. Fortunately, I found C compilers provide a way to disable padding using <code class="language-plaintext highlighter-rouge">#pragma pack</code>.</p>
+
+<p>For example:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma pack(push, 1)
+</span><span class="k">struct</span> <span class="n">AlignmentCheck</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="cp">#pragma pack(pop)
+</span></code></pre></div></div>
+
+<p>This produces a struct of 13 bytes, completely eliminating internal padding. However, for computation, a properly padded struct must be constructed from deserilization.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[While playing with C, I encountered this interesting alignment padding behaviour in struct.]]></summary></entry><entry><title type="html">Concurrent quicksort algorithm with custom thread pool in C++</title><link href="/2025/11/02/concurrent-quicksort.html" rel="alternate" type="text/html" title="Concurrent quicksort algorithm with custom thread pool in C++" /><published>2025-11-02T00:00:00-05:00</published><updated>2025-11-02T00:00:00-05:00</updated><id>/2025/11/02/concurrent-quicksort</id><content type="html" xml:base="/2025/11/02/concurrent-quicksort.html"><![CDATA[<p>While reading <i>C++ Concurrency in Action</i>, I got the idea of implementing a concurrent version of the quicksort algorithm. My plan was to create a pool of worker threads and use them to concurrently execute the recursive subtasks of the sort. <a href="https://github.com/Bipinoli/performance-focused-programming/tree/89f16df1ff8111fe852ec630e2ab2c3fbefda52d/quiksort_workers_multi_threaded">This is my implementation on GitHub</a>. In this post, I want to document the idea and share my general thought process.</p>
 
 <h4 id="step-1-sequential-quicksort-algorithm">Step 1: Sequential quicksort algorithm</h4>
 <p><a href="https://github.com/Bipinoli/performance-focused-programming/tree/89f16df1ff8111fe852ec630e2ab2c3fbefda52d/quiksort_workers_multi_threaded/sequential.hpp">Link to the sequential implementation</a></p>
